@@ -205,7 +205,7 @@ public class HoverboardLocomotion : MonoBehaviour
         if (elapsed <= 0f) return Vector3.zero;
 
         Vector3 displacement = headset.position - oldest.position;
-        return (displacement / elapsed) * 2;  // metres per second
+        return displacement / elapsed;  // metres per second
     }
 
     // -------------------------------------------------------------------------

@@ -59,8 +59,17 @@ public class HoverboardLocomotion : MonoBehaviour
              "Final speed = lockedSpeed * (1 + crouchDelta * this value)")]
     public float crouchSpeedMultiplier = 2.0f;
 
-    [Tooltip("Sensitivity of wrist roll to turning. Degrees of turn per degree of roll per second.")]
+    [Tooltip("Multiplier applied to the player's velocity when the board engages. " +
+             "1.5 = 50% speed boost on launch.")]
+    public float engageSpeedMultiplier = 1.5f;
+
+    [Tooltip("How sharply the board turns per degree of wrist roll. " +
+             "Roll is measured from upright (0°) — bigger tilt = faster continuous turn.")]
     public float carveSensitivity = 1.2f;
+
+    [Tooltip("How quickly rotational velocity fades to zero after grip is released. " +
+             "Higher = snappier stop, lower = longer coast.")]
+    public float carveDamping = 6f;
 
     [Tooltip("Threshold grip value (0-1) to consider grip as held")]
     public float gripThreshold = 0.5f;
@@ -78,6 +87,7 @@ public class HoverboardLocomotion : MonoBehaviour
 
     // Velocity tracking
     private float lockedSpeed = 0f;
+    private float speed_speed = 0f;
     private Vector3 travelDirection = Vector3.forward;
 
     // Positional history ring buffer for velocity sampling
@@ -87,8 +97,8 @@ public class HoverboardLocomotion : MonoBehaviour
     // Crouch tracking
     private float boardEngageHeadHeight = 0f;   // headset Y when board was engaged
 
-    // Wrist roll / carving
-    private float previousControllerRoll = 0f;
+    // Current rotational velocity (degrees/sec) — decays smoothly on grip release
+    private float currentTurnRate = 0f;
 
     // Trigger edge detection (we want press events, not hold)
     private bool triggerWasPressed = false;
@@ -283,15 +293,12 @@ public class HoverboardLocomotion : MonoBehaviour
             return;
         }
 
-        // Lock velocity
-        lockedSpeed = speed;
+        // Lock velocity with engage boost
+        lockedSpeed = speed * engageSpeedMultiplier;
         travelDirection = velocity.normalized;
 
         // Record head height at engage time for crouch calculation
         boardEngageHeadHeight = headset.position.y;
-
-        // Read initial controller roll to use as carving baseline
-        previousControllerRoll = GetControllerRoll();
 
         state = BoardState.Cruising;
         SetBoardVisible(true);
@@ -338,18 +345,18 @@ public class HoverboardLocomotion : MonoBehaviour
         HandleCarving();
 
         // Decelerate
-        lockedSpeed = Mathf.Max(0f, lockedSpeed - brakeDeceleration * Time.deltaTime);
+        speed_speed = Mathf.Max(0f, speed_speed - brakeDeceleration * Time.deltaTime);
 
-        if (lockedSpeed <= 0f)
+        if (speed_speed <= 0f)
         {
-            // Full stop
             state = BoardState.Idle;
+            currentTurnRate = 0f;
             SetBoardVisible(false);
             Debug.Log("HoverboardLocomotion: Full stop.");
             return;
         }
 
-        MovePlayer(travelDirection, lockedSpeed);
+        MovePlayer(travelDirection, speed_speed);
     }
 
     // -------------------------------------------------------------------------
@@ -358,27 +365,23 @@ public class HoverboardLocomotion : MonoBehaviour
 
     private void HandleCarving()
     {
-        if (!IsGripHeld()) 
+        if (IsGripHeld())
         {
-            // Reset roll baseline when grip is released
-            previousControllerRoll = GetControllerRoll();
-            return;
+            // Signed roll from upright: positive = tilted right, negative = tilted left.
+            float signedRoll = Mathf.DeltaAngle(0f, GetControllerRoll());
+            currentTurnRate = -signedRoll * carveSensitivity;
+        }
+        else
+        {
+            // Smoothly decay turn rate to zero after grip released
+            currentTurnRate = Mathf.Lerp(currentTurnRate, 0f, carveDamping * Time.deltaTime);
         }
 
-        float currentRoll = GetControllerRoll();
-        float rollDelta = Mathf.DeltaAngle(previousControllerRoll, currentRoll);
-        previousControllerRoll = currentRoll;
+        if (Mathf.Abs(currentTurnRate) < 0.01f) return;
 
-        // Rotate the XR Origin around the headset's position on the Y axis
-        // so the camera view turns with the carve, not just the travel direction
-        float turnAmount = rollDelta * carveSensitivity * Time.deltaTime;
+        float turnAmount = currentTurnRate * Time.deltaTime;
+        transform.RotateAround(headset.position, Vector3.up, turnAmount);
 
-        // Rotate around the headset's world position so the player pivots
-        // in place rather than orbiting around the XR Origin's feet pivot
-        Vector3 pivotPoint = headset.position;
-        transform.RotateAround(pivotPoint, Vector3.up, turnAmount);
-
-        // Keep travel direction in sync with the new forward orientation
         travelDirection = Quaternion.AngleAxis(turnAmount, Vector3.up) * travelDirection;
         travelDirection.y = 0f;
         travelDirection.Normalize();
@@ -406,6 +409,7 @@ public class HoverboardLocomotion : MonoBehaviour
         Vector3 movement = direction * speed * Time.deltaTime;
         // Move the XR Origin itself, not the headset transform
         transform.position += movement;
+        speed_speed = speed;
     }
 
     // -------------------------------------------------------------------------

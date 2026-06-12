@@ -585,11 +585,10 @@ MonoBehaviour:
   headset: {fileID: 534910277}
   hoverboardModel: {fileID: 6397913729488411876, guid: ec88222b6735b5345a6ba47a90ffdbb6, type: 3}
   velocitySampleDuration: 0.2
-  brakeDeceleration: 0.75
+  brakeDeceleration: 1
   crouchSpeedMultiplier: 4
   engageSpeedMultiplier: 1.5
   carveSensitivity: 0.25
-  carveDamping: 4
   gripThreshold: 0.5
   boardHeightOffset: -1.5
 --- !u!114 &154075174
@@ -699,8 +698,6 @@ MonoBehaviour:
   menuRayObjects:
   - {fileID: 1440991532}
   - {fileID: 695810767}
-  - {fileID: 850323183}
-  - {fileID: 1732516385}
 --- !u!1001 &164121972
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5722,11 +5719,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a21b85f8e688fb9489f65b8ceb6779a6, type: 3}
   m_PrefabInstance: {fileID: 834567082}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &850323183 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5227292470352409039, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
-  m_PrefabInstance: {fileID: 281992799}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &858880459
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9869,11 +9861,6 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3d8d87e2008409f4fa5374a6c07665a2, type: 3}
   m_PrefabInstance: {fileID: 1732091204}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1732516385 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2998152119438995280, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
-  m_PrefabInstance: {fileID: 281992799}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1745256292
 PrefabInstance:

@@ -74,8 +74,22 @@ public class HoverboardLocomotion : MonoBehaviour
     [Tooltip("Threshold grip value (0-1) to consider grip as held")]
     public float gripThreshold = 0.5f;
 
-    [Tooltip("How far below the board model sits relative to the headset Y position")]
-    public float boardHeightOffset = -1.0f;
+    [Tooltip("How high the board floats above the ground surface")]
+    public float boardHoverHeight = 0.05f;
+
+    [Tooltip("Layer mask for ground detection raycast. Set to your floor/terrain layer.")]
+    public LayerMask groundMask = ~0;   // default: everything
+
+    [Header("Collision Safety")]
+    [Tooltip("How far ahead to check for walls while on the board (metres)")]
+    public float wallDetectionDistance = 0.6f;
+
+    [Tooltip("Layer mask for wall detection. Exclude the player and floor layers.")]
+    public LayerMask wallMask = ~0;
+
+    [Tooltip("A surface is treated as a wall if its normal's Y component is below this value. " +
+             "Keeps floors from triggering a dismount (0.5 works well for most geometry).")]
+    public float wallNormalThreshold = 0.5f;
 
     // -------------------------------------------------------------------------
     // Private state
@@ -312,6 +326,8 @@ public class HoverboardLocomotion : MonoBehaviour
 
     private void UpdateCruising()
     {
+        if (CheckWallAhead()) return;
+
         HandleCarving();
 
         float currentSpeed = CalculateCrouchSpeed();
@@ -341,6 +357,8 @@ public class HoverboardLocomotion : MonoBehaviour
 
     private void UpdateBraking()
     {
+        if (CheckWallAhead()) return;
+
         // Carving still works while braking
         HandleCarving();
 
@@ -357,6 +375,42 @@ public class HoverboardLocomotion : MonoBehaviour
         }
 
         MovePlayer(travelDirection, speed_speed);
+    }
+
+    // -------------------------------------------------------------------------
+    // Wall detection — dismounts the player on imminent vertical collision
+    // -------------------------------------------------------------------------
+
+    /// <summary>
+    /// Casts a ray forward along the travel direction from headset height.
+    /// Returns true (and triggers dismount) if a vertical wall is detected ahead.
+    /// </summary>
+    private bool CheckWallAhead()
+    {
+        // Ray origin at headset position, direction = travel direction (horizontal)
+        Vector3 origin = headset.position;
+        Vector3 dir = travelDirection;
+
+        if (Physics.Raycast(origin, dir, out RaycastHit hit, wallDetectionDistance, wallMask))
+        {
+            // Only react to surfaces that are roughly vertical (not the floor)
+            if (Mathf.Abs(hit.normal.y) < wallNormalThreshold)
+            {
+                DismountFromWall();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void DismountFromWall()
+    {
+        lockedSpeed = 0f;
+        currentTurnRate = 0f;
+        state = BoardState.Idle;
+        SetBoardVisible(false);
+        Debug.Log("HoverboardLocomotion: Wall collision — dismounted.");
     }
 
     // -------------------------------------------------------------------------
@@ -420,10 +474,21 @@ public class HoverboardLocomotion : MonoBehaviour
     {
         if (hoverboardModel == null) return;
 
-        // Position board under the headset horizontally,
-        // at a fixed Y offset below headset height
+        // Follow headset horizontally
         Vector3 boardPos = headset.position;
-        boardPos.y = headset.position.y + boardHeightOffset;
+
+        // Raycast straight down from headset height to find the ground surface
+        if (Physics.Raycast(new Vector3(boardPos.x, boardPos.y, boardPos.z),
+                            Vector3.down, out RaycastHit hit, 10f, groundMask))
+        {
+            boardPos.y = hit.point.y + boardHoverHeight;
+        }
+        else
+        {
+            // Fallback if raycast misses (e.g. player is above a gap)
+            boardPos.y = 0f + boardHoverHeight;
+        }
+
         hoverboardModel.position = boardPos;
 
         // Board faces the direction of travel when cruising/braking,

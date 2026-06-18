@@ -9530,7 +9530,7 @@ MonoBehaviour:
   m_Colliders: []
   m_InteractionLayers:
     m_Bits: 4294967295
-  m_DistanceCalculationMode: 1
+  m_DistanceCalculationMode: 2
   m_SelectMode: 1
   m_FocusMode: 1
   m_CustomReticle: {fileID: 0}
@@ -9587,8 +9587,8 @@ MonoBehaviour:
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
   m_AutoFindParentInteractableInHierarchy: 0
-  m_ParentInteractableObject: {fileID: 0}
-  m_TeleportationProvider: {fileID: 0}
+  m_ParentInteractableObject: {fileID: 783262279}
+  m_TeleportationProvider: {fileID: 119460413527871433}
   m_MatchOrientation: 0
   m_MatchDirectionalInput: 0
   m_TeleportTrigger: 0
@@ -16176,6 +16176,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 43da843e7c8baff4d87eee5d5f64eb4d, type: 3}
+--- !u!114 &119460413527871433 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3330167523358900500, guid: 43da843e7c8baff4d87eee5d5f64eb4d, type: 3}
+  m_PrefabInstance: {fileID: 119460413527871432}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01f69dc1cb084aa42b2f2f8cd87bc770, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationProvider
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

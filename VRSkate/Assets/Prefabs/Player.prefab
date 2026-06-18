@@ -139,6 +139,7 @@ MonoBehaviour:
   m_GroupName: Right
   m_InteractionManager: {fileID: 0}
   m_StartingGroupMembers:
+  - {fileID: 4742689660064860684}
   - {fileID: 7291537801392011952}
   - {fileID: 1135018623278172293}
   m_StartingInteractionOverridesMap:
@@ -390,7 +391,7 @@ MonoBehaviour:
   m_EnableTurnAround: 1
   m_DelayTime: 0
   m_LeftHandTurnInput:
-    m_InputSourceMode: 2
+    m_InputSourceMode: 0
     m_InputAction:
       m_Name: Left Hand Snap Turn
       m_Type: 0
@@ -424,7 +425,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2319326157274578944}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 75b29b6c6428c984a8a73ffc2d58063b, type: 3}
   m_Name: 
@@ -435,7 +436,7 @@ MonoBehaviour:
   m_EnableTurnLeftRight: 1
   m_EnableTurnAround: 1
   m_LeftHandTurnInput:
-    m_InputSourceMode: 2
+    m_InputSourceMode: 0
     m_InputAction:
       m_Name: Left Hand Turn
       m_Type: 0
@@ -445,7 +446,7 @@ MonoBehaviour:
       m_Interactions: 
       m_SingletonActionBindings: []
       m_Flags: 0
-    m_InputActionReference: {fileID: 1010738217276881514, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+    m_InputActionReference: {fileID: 0}
     m_ObjectReferenceObject: {fileID: 0}
     m_ManualValue: {x: 0, y: 0}
   m_RightHandTurnInput:
@@ -937,6 +938,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8103235222078580955}
   - component: {fileID: 1127112702747882017}
+  - component: {fileID: 5534396956926166533}
   m_Layer: 2
   m_Name: Move
   m_TagString: Untagged
@@ -1012,6 +1014,54 @@ MonoBehaviour:
   m_RightControllerTransform: {fileID: 865150372030851205}
   m_LeftHandMovementDirection: 0
   m_RightHandMovementDirection: 0
+--- !u!114 &5534396956926166533
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4896657157620501529}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 626a4d6723d6ad24b9aebb811ad5a3dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Locomotion.Movement.ContinuousMoveProvider
+  m_Mediator: {fileID: 8340889912422940711}
+  m_TransformationPriority: 0
+  m_MoveSpeed: 1
+  m_InAirControlModifier: 0.5
+  m_EnableStrafe: 1
+  m_EnableFly: 0
+  m_ForwardSource: {fileID: 1668185867258752115}
+  m_LeftHandMoveInput:
+    m_InputSourceMode: 2
+    m_InputAction:
+      m_Name: Left Hand Move
+      m_Type: 0
+      m_ExpectedControlType: Vector2
+      m_Id: 6ba826dc-bf93-4d44-aae8-c169111df96e
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_InputActionReference: {fileID: 6972639530819350904, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+    m_ObjectReferenceObject: {fileID: 0}
+    m_ManualValue: {x: 0, y: 0}
+  m_RightHandMoveInput:
+    m_InputSourceMode: 0
+    m_InputAction:
+      m_Name: Right Hand Move
+      m_Type: 0
+      m_ExpectedControlType: Vector2
+      m_Id: 5e5addf3-c1ff-428c-ac75-7855e40c0d09
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_InputActionReference: {fileID: 0}
+    m_ObjectReferenceObject: {fileID: 0}
+    m_ManualValue: {x: 0, y: 0}
+  m_UseGravity: 1
 --- !u!1 &5842447605859811598
 GameObject:
   m_ObjectHideFlags: 0
@@ -1125,6 +1175,7 @@ MonoBehaviour:
   m_GroupName: Left
   m_InteractionManager: {fileID: 0}
   m_StartingGroupMembers:
+  - {fileID: 4982382025140762496}
   - {fileID: 8586442809442229807}
   - {fileID: 5848415810932022866}
   m_StartingInteractionOverridesMap:
@@ -1429,7 +1480,6 @@ GameObject:
   - component: {fileID: 535950436780459923}
   - component: {fileID: 8357389954496478822}
   - component: {fileID: 8383016902801272904}
-  - component: {fileID: 4235595126464785607}
   - component: {fileID: 8558728781296801136}
   - component: {fileID: 5401256066260395552}
   - component: {fileID: 6945293727451653906}
@@ -1512,7 +1562,7 @@ MonoBehaviour:
   m_Camera: {fileID: 3601085179465383303}
   m_OriginBaseGameObject: {fileID: 6982593383981873243}
   m_CameraFloorOffsetObject: {fileID: 8547886676596055877}
-  m_RequestedTrackingOriginMode: 0
+  m_RequestedTrackingOriginMode: 2
   m_CameraYOffset: 1.36144
 --- !u!114 &8383016902801272904
 MonoBehaviour:
@@ -1542,34 +1592,6 @@ MonoBehaviour:
   m_MotionControllerModeEnded:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &4235595126464785607
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6982593383981873243}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9b3d17eeb2e6bc47ada81d8f7f638d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_GazeInteractor: {fileID: 7658524029807497484}
-  m_FallbackDivergence: 60
-  m_HideCursorWithNoActiveRays: 1
-  m_RayInteractors:
-  - m_Interactor: {fileID: 0}
-    m_TeleportRay: 0
-  - m_Interactor: {fileID: 4982382025140762496}
-    m_TeleportRay: 1
-  - m_Interactor: {fileID: 0}
-    m_TeleportRay: 0
-  - m_Interactor: {fileID: 4742689660064860684}
-    m_TeleportRay: 1
-  m_AimAssistRequiredAngle: 30
-  m_AimAssistRequiredSpeed: 0.25
-  m_AimAssistPercent: 0.8
-  m_AimAssistMaxSpeedPercent: 10
 --- !u!114 &8558728781296801136
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1597,15 +1619,21 @@ MonoBehaviour:
     additionalObjects:
     - {fileID: 4982382025140762508}
     - {fileID: 4742689660064860672}
-  headset: {fileID: 0}
-  menuDistance: 1.2
-  menuHeightOffset: 0.1
+  headset: {fileID: 1668185867258752115}
+  hoverboard: {fileID: 0}
+  controllerInputManagers:
+  - {fileID: 3519195019789244051}
+  - {fileID: 7892705054034031374}
+  menuDistance: 1.5
+  menuHeightOffset: 0.2
   menuRayObjects:
   - {fileID: 3630963822884748788}
   - {fileID: 7821094519134595875}
   - {fileID: 7102387344919228745}
   - {fileID: 4357626221688825758}
-  controllerInputManagers: []
+  sceneNames:
+  - suburbs2
+  - city
 --- !u!114 &5401256066260395552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1613,7 +1641,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6982593383981873243}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f6316aaf34976ff47a952aa3a41e976b, type: 3}
   m_Name: 
@@ -1624,21 +1652,21 @@ MonoBehaviour:
   cameraOffset: {fileID: 0}
   headset: {fileID: 1668185867258752115}
   hoverboardModel: {fileID: 6397913729488411876, guid: ec88222b6735b5345a6ba47a90ffdbb6, type: 3}
-  velocitySampleDuration: 0.2
+  velocitySampleDuration: 0.15
   brakeDeceleration: 0.75
-  crouchSpeedMultiplier: 4
-  engageSpeedMultiplier: 1.5
+  crouchSpeedMultiplier: 5
+  engageSpeedMultiplier: 2
   carveSensitivity: 0.25
   carveDamping: 4
   gripThreshold: 0.5
-  boardHoverHeight: -0.275
+  boardHoverHeight: -0.4
   groundMask:
     serializedVersion: 2
     m_Bits: 64
   wallDetectionDistance: 0.6
   wallMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 55
   wallNormalThreshold: 0.5
 --- !u!114 &6945293727451653906
 MonoBehaviour:
@@ -1647,7 +1675,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6982593383981873243}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 626a4d6723d6ad24b9aebb811ad5a3dd, type: 3}
   m_Name: 
@@ -1700,7 +1728,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01f69dc1cb084aa42b2f2f8cd87bc770, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationProvider
-  m_Mediator: {fileID: 0}
+  m_Mediator: {fileID: 8340889912422940711}
   m_TransformationPriority: 0
   m_DelayTime: 0
 --- !u!1 &7371762105286864763
@@ -2296,17 +2324,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7378618157167557198, guid: b84cd05e1160fe34cab2585022c8cd99, type: 3}
   m_PrefabInstance: {fileID: 4008324651362108747}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7658524029807497484 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6766910295942714439, guid: b84cd05e1160fe34cab2585022c8cd99, type: 3}
-  m_PrefabInstance: {fileID: 4008324651362108747}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c416f1a5c494e224fb5564fd1362b50d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &4952992076773389729
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2770,7 +2787,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2761784063978902503, guid: c1800acf6366418a9b5f610249000331, type: 3}
       propertyPath: m_EnableUIInteraction
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2761784063978902503, guid: c1800acf6366418a9b5f610249000331, type: 3}
       propertyPath: m_SelectInput.m_InputActionReferenceValue

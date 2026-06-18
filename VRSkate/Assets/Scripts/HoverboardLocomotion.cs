@@ -177,6 +177,11 @@ public class HoverboardLocomotion : MonoBehaviour
         }
 
         UpdateBoardModelPosition();
+
+        if (Keyboard.current?.spaceKey.wasPressedThisFrame == true)
+        {
+            EBrake();
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -242,12 +247,16 @@ public class HoverboardLocomotion : MonoBehaviour
             ? triggerAction.action.ReadValue<float>()
             : 0f;
 
-        bool triggerPressed = triggerValue > 0.8f;
+        bool triggerPressed = triggerValue > 0.5f;
 
         // Rising edge only — we want a single press event, not continuous hold
         if (triggerPressed && !triggerWasPressed)
         {
             OnTriggerPressed();
+        }
+        else if (!triggerPressed && triggerWasPressed)
+        {
+            OnTriggerReleased();
         }
 
         triggerWasPressed = triggerPressed;
@@ -265,9 +274,21 @@ public class HoverboardLocomotion : MonoBehaviour
                 BeginBraking();
                 break;
 
+            // case BoardState.Braking:
+            //     // Pressing trigger while already braking cancels the brake
+            //     // and re-locks the current (reduced) speed
+            //     state = BoardState.Cruising;
+            //     break;
+        }
+    }
+
+    private void OnTriggerReleased()
+    {
+        switch (state)
+        {
             case BoardState.Braking:
-                // Pressing trigger while already braking cancels the brake
-                // and re-locks the current (reduced) speed
+                // Re-lock current speed and return to cruising
+                lockedSpeed = speed_speed;
                 state = BoardState.Cruising;
                 break;
         }
@@ -362,8 +383,14 @@ public class HoverboardLocomotion : MonoBehaviour
         // Carving still works while braking
         HandleCarving();
 
+        // Update speed with deceleration and allow crouch to amplify it as well (same as cruising)
+        boardEngageHeadHeight = headset.position.y;
+
         // Decelerate
-        speed_speed = Mathf.Max(0f, speed_speed - brakeDeceleration * Time.deltaTime);
+        float triggerValue = triggerAction != null
+            ? triggerAction.action.ReadValue<float>()
+            : 0f;
+        speed_speed = Mathf.Max(0f, speed_speed - (brakeDeceleration * (triggerValue+0.5f)) * Time.deltaTime);
 
         if (speed_speed <= 0f)
         {
@@ -375,6 +402,16 @@ public class HoverboardLocomotion : MonoBehaviour
         }
 
         MovePlayer(travelDirection, speed_speed);
+    }
+
+    public void EBrake()
+    {
+        state = BoardState.Idle;
+        currentTurnRate = 0f;
+        lockedSpeed = 0f;
+        speed_speed = 0f;
+        SetBoardVisible(false);
+        Debug.Log("HoverboardLocomotion: Emergency brake — dismounted.");
     }
 
     // -------------------------------------------------------------------------

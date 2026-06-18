@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0f0207feb189a3a4e80ffe7cc7f17a94
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 225277
+  packageName: Skateboard Animated (Cartoonic)
+  packageVersion: 1.0
+  assetPath: Assets/SkateBoard/Animation/Skate_Board.controller
+  uploadId: 510406

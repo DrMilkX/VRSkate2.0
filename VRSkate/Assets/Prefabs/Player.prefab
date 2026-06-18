@@ -1425,16 +1425,15 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3860995176830396765}
-  - component: {fileID: 8357389954496478822}
   - component: {fileID: 4806457260621220963}
   - component: {fileID: 535950436780459923}
+  - component: {fileID: 8357389954496478822}
   - component: {fileID: 8383016902801272904}
   - component: {fileID: 4235595126464785607}
-  - component: {fileID: 5401256066260395552}
   - component: {fileID: 8558728781296801136}
+  - component: {fileID: 5401256066260395552}
   - component: {fileID: 6945293727451653906}
   - component: {fileID: 3330167523358900500}
-  - component: {fileID: 382947411817766571}
   m_Layer: 2
   m_Name: Player
   m_TagString: Player
@@ -1459,23 +1458,6 @@ Transform:
   - {fileID: 8296510842422805188}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8357389954496478822
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6982593383981873243}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0cb9aa70a22847b5925ee5f067c10a9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Camera: {fileID: 3601085179465383303}
-  m_OriginBaseGameObject: {fileID: 6982593383981873243}
-  m_CameraFloorOffsetObject: {fileID: 8547886676596055877}
-  m_RequestedTrackingOriginMode: 0
-  m_CameraYOffset: 1.36144
 --- !u!143 &4806457260621220963
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1515,6 +1497,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ActionAssets:
   - {fileID: -944628639613478452, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+--- !u!114 &8357389954496478822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6982593383981873243}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0cb9aa70a22847b5925ee5f067c10a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Camera: {fileID: 3601085179465383303}
+  m_OriginBaseGameObject: {fileID: 6982593383981873243}
+  m_CameraFloorOffsetObject: {fileID: 8547886676596055877}
+  m_RequestedTrackingOriginMode: 0
+  m_CameraYOffset: 1.36144
 --- !u!114 &8383016902801272904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1550,7 +1549,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6982593383981873243}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c9b3d17eeb2e6bc47ada81d8f7f638d8, type: 3}
   m_Name: 
@@ -1571,6 +1570,42 @@ MonoBehaviour:
   m_AimAssistRequiredSpeed: 0.25
   m_AimAssistPercent: 0.8
   m_AimAssistMaxSpeedPercent: 10
+--- !u!114 &8558728781296801136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6982593383981873243}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e78f433fa3cfa844b8c8b7f44de1507, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocomotionSwitcher
+  locomotionOptions:
+  - displayName: Skateboard
+    locomotionComponent: {fileID: 5401256066260395552}
+    controllerMotionMode: 2
+    additionalObjects: []
+  - displayName: Joystick
+    locomotionComponent: {fileID: 1127112702747882017}
+    controllerMotionMode: 1
+    additionalObjects: []
+  - displayName: Teleport
+    locomotionComponent: {fileID: 3330167523358900500}
+    controllerMotionMode: 2
+    additionalObjects:
+    - {fileID: 4982382025140762508}
+    - {fileID: 4742689660064860672}
+  headset: {fileID: 0}
+  menuDistance: 1.2
+  menuHeightOffset: 0.1
+  menuRayObjects:
+  - {fileID: 3630963822884748788}
+  - {fileID: 7821094519134595875}
+  - {fileID: 7102387344919228745}
+  - {fileID: 4357626221688825758}
+  controllerInputManagers: []
 --- !u!114 &5401256066260395552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1605,38 +1640,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   wallNormalThreshold: 0.5
---- !u!114 &8558728781296801136
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6982593383981873243}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e78f433fa3cfa844b8c8b7f44de1507, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LocomotionSwitcher
-  locomotionOptions:
-  - displayName: Skateboard
-    locomotionComponent: {fileID: 5401256066260395552}
-    additionalObjects: []
-  - displayName: Joystick
-    locomotionComponent: {fileID: 1127112702747882017}
-    additionalObjects: []
-  - displayName: Teleport
-    locomotionComponent: {fileID: 3330167523358900500}
-    additionalObjects:
-    - {fileID: 4982382025140762508}
-    - {fileID: 4742689660064860672}
-  headset: {fileID: 0}
-  menuDistance: 1.2
-  menuHeightOffset: 0.1
-  menuRayObjects:
-  - {fileID: 3630963822884748788}
-  - {fileID: 7821094519134595875}
-  - {fileID: 7102387344919228745}
-  - {fileID: 4357626221688825758}
 --- !u!114 &6945293727451653906
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1700,20 +1703,6 @@ MonoBehaviour:
   m_Mediator: {fileID: 0}
   m_TransformationPriority: 0
   m_DelayTime: 0
---- !u!114 &382947411817766571
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6982593383981873243}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03a5df2202a8b96488c744be3bd0c33e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.LocomotionSystem
-  m_Timeout: 10
-  m_XROrigin: {fileID: 0}
 --- !u!1 &7371762105286864763
 GameObject:
   m_ObjectHideFlags: 0

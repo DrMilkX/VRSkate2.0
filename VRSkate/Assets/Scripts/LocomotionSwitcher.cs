@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit.UI;
+using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
 using TMPro;
 
 /// <summary>
@@ -24,11 +25,21 @@ public class LocomotionSwitcher : MonoBehaviour
     [System.Serializable]
     public class LocomotionOption
     {
+        public enum ControllerMotionMode
+        {
+            Auto,
+            SmoothMotion,
+            Teleport
+        }
+
         [Tooltip("Name shown in the menu")]
         public string displayName;
 
         [Tooltip("The MonoBehaviour that drives this locomotion mode")]
         public MonoBehaviour locomotionComponent;
+
+        [Tooltip("How the controller locomotion actions should behave in this mode. Auto infers teleport vs smooth movement from the assigned component/name.")]
+        public ControllerMotionMode controllerMotionMode = ControllerMotionMode.Auto;
 
         [Tooltip("Extra GameObjects to enable with this mode (e.g. teleport ray interactor GO)")]
         public GameObject[] additionalObjects;
@@ -55,6 +66,10 @@ public class LocomotionSwitcher : MonoBehaviour
              "Drag in your left/right Ray Interactor GameObjects here.")]
     public GameObject[] menuRayObjects;
 
+    [Header("Controller Input Managers")]
+    [Tooltip("ControllerInputActionManager components that should follow the selected locomotion mode. Leave empty to auto-find them under this XR Origin.")]
+    public ControllerInputActionManager[] controllerInputManagers;
+
     // -------------------------------------------------------------------------
     // Private state
     // -------------------------------------------------------------------------
@@ -76,6 +91,9 @@ public class LocomotionSwitcher : MonoBehaviour
     {
         if (headset == null)
             headset = Camera.main.transform;
+
+        if (controllerInputManagers == null || controllerInputManagers.Length == 0)
+            controllerInputManagers = GetComponentsInChildren<ControllerInputActionManager>(true);
 
         BuildMenu();
 
@@ -179,10 +197,54 @@ public class LocomotionSwitcher : MonoBehaviour
                     if (go != null) go.SetActive(active);
         }
 
+        SyncControllerInputManagers(index);
+
         activeIndex = index;
         RefreshButtonHighlights();
 
         Debug.Log($"LocomotionSwitcher: Switched to '{locomotionOptions[index].displayName}'");
+    }
+
+    private void SyncControllerInputManagers(int index)
+    {
+        if (controllerInputManagers == null)
+            return;
+
+        bool useSmoothMotion = ResolveSmoothMotionEnabled(locomotionOptions[index]);
+
+        foreach (var manager in controllerInputManagers)
+        {
+            if (manager == null)
+                continue;
+
+            manager.smoothMotionEnabled = useSmoothMotion;
+        }
+    }
+
+    private static bool ResolveSmoothMotionEnabled(LocomotionOption option)
+    {
+        if (option.controllerMotionMode == LocomotionOption.ControllerMotionMode.SmoothMotion)
+            return true;
+
+        if (option.controllerMotionMode == LocomotionOption.ControllerMotionMode.Teleport)
+            return false;
+
+        if (option.locomotionComponent != null)
+        {
+            string componentName = option.locomotionComponent.GetType().Name;
+            if (componentName.IndexOf("teleport", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                return false;
+
+            if (componentName.IndexOf("move", System.StringComparison.OrdinalIgnoreCase) >= 0 ||
+                componentName.IndexOf("locomotion", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                return true;
+        }
+
+        if (!string.IsNullOrWhiteSpace(option.displayName) &&
+            option.displayName.IndexOf("teleport", System.StringComparison.OrdinalIgnoreCase) >= 0)
+            return false;
+
+        return true;
     }
 
     // -------------------------------------------------------------------------

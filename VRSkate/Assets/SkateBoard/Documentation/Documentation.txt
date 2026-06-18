@@ -1,0 +1,48 @@
+	
+--------------SkateBoard 3D----------------------------
+
+This pack contains 3d Model and Animation's of Skateboard
+
+Technical Details:-
+				
+		- Vertex count : 2852
+		- Tris count : 5604
+		- Animations : 12 (Wave, Speed up, Long leg, Wide leg, Drift L, Drift R, Jump, Snake, Snake 02, Extra long leg, Flag, Tail)
+		- Texture Variations : 10
+		- Used Material(s) : Unity Standard Shader
+		- Texture maps : Albedo/Base Color, Metalic Rough
+		- Texture Size : 2048(.png)
+		- Prefabs : 10
+
+Other features:-
+
+	- Rigged model	
+	- Stylized cartoonic animations included
+	- Seperated wheels
+	- Simple colliders attached
+	- Easy to change colors
+	- Mobile, AR supported
+
+Folder details:-
+
+	Materials : Where the materials for the model located.
+	
+	Meshes : Contain FBX format of the 3d model.
+	
+	Textures : Contains Textures, that are in (.PNG) file format
+	
+	(Other folders - Prefabs, Scenes)
+
+How to use:-
+	
+	Simply drag and drop the prefab to your scene and use it.
+	(Prefab(s) located under 
+	Asset > SkateBoard > Prefabs).
+
+..................................................................................
+
+About Us : "SR Studios Kerala", Game developing company located in Alappuzha, Kerala, India
+
+Contact : srstudioskerala@gmail.com
+
+................Thanks for downloading this package................................

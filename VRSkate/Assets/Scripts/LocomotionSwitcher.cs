@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit.UI;
-using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
 using UnityEngine.SceneManagement;
 using TMPro;
 
@@ -23,16 +22,11 @@ public class LocomotionSwitcher : MonoBehaviour
     [System.Serializable]
     public class LocomotionOption
     {
-        public enum ControllerMotionMode { Auto, SmoothMotion, Teleport }
-
         [Tooltip("Name shown in the menu")]
         public string displayName;
 
         [Tooltip("The MonoBehaviour that drives this locomotion mode")]
         public MonoBehaviour locomotionComponent;
-
-        [Tooltip("How controller locomotion actions should behave in this mode")]
-        public ControllerMotionMode controllerMotionMode = ControllerMotionMode.Auto;
 
         [Tooltip("Extra GameObjects to enable with this mode (e.g. teleport ray GO)")]
         public GameObject[] additionalObjects;
@@ -52,8 +46,6 @@ public class LocomotionSwitcher : MonoBehaviour
     [Tooltip("HoverboardLocomotion script — for the settings submenu")]
     public HoverboardLocomotion hoverboard;
 
-    [Header("Controller Input Managers")]
-    public ControllerInputActionManager[] controllerInputManagers;
 
     // -------------------------------------------------------------------------
     // Inspector — Menu
@@ -117,9 +109,6 @@ public class LocomotionSwitcher : MonoBehaviour
 
         if (hoverboard == null)
             hoverboard = GetComponent<HoverboardLocomotion>();
-
-        if (controllerInputManagers == null || controllerInputManagers.Length == 0)
-            controllerInputManagers = GetComponentsInChildren<ControllerInputActionManager>(true);
 
         CacheHoverboardDefaults();
         BuildMenu();
@@ -238,35 +227,9 @@ public class LocomotionSwitcher : MonoBehaviour
                     if (go != null) go.SetActive(active);
         }
 
-        SyncControllerInputManagers(index);
         activeIndex = index;
         RefreshLocomotionHighlights();
         Debug.Log($"LocomotionSwitcher: '{locomotionOptions[index].displayName}'");
-    }
-
-    private void SyncControllerInputManagers(int index)
-    {
-        if (controllerInputManagers == null) return;
-        bool smooth = ResolveSmoothMotion(locomotionOptions[index]);
-        foreach (var m in controllerInputManagers)
-            if (m != null) m.smoothMotionEnabled = smooth;
-    }
-
-    private static bool ResolveSmoothMotion(LocomotionOption opt)
-    {
-        if (opt.controllerMotionMode == LocomotionOption.ControllerMotionMode.SmoothMotion) return true;
-        if (opt.controllerMotionMode == LocomotionOption.ControllerMotionMode.Teleport) return false;
-        if (opt.locomotionComponent != null)
-        {
-            string n = opt.locomotionComponent.GetType().Name;
-            if (n.IndexOf("teleport", System.StringComparison.OrdinalIgnoreCase) >= 0) return false;
-            if (n.IndexOf("move", System.StringComparison.OrdinalIgnoreCase) >= 0 ||
-                n.IndexOf("locomotion", System.StringComparison.OrdinalIgnoreCase) >= 0) return true;
-        }
-        if (!string.IsNullOrWhiteSpace(opt.displayName) &&
-            opt.displayName.IndexOf("teleport", System.StringComparison.OrdinalIgnoreCase) >= 0)
-            return false;
-        return true;
     }
 
     // -------------------------------------------------------------------------

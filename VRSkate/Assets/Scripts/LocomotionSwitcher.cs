@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit.UI;
+using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
 using UnityEngine.SceneManagement;
 using TMPro;
 
@@ -22,11 +23,16 @@ public class LocomotionSwitcher : MonoBehaviour
     [System.Serializable]
     public class LocomotionOption
     {
+        public enum ControllerMotionMode { Auto, SmoothMotion, Teleport }
+
         [Tooltip("Name shown in the menu")]
         public string displayName;
 
         [Tooltip("The MonoBehaviour that drives this locomotion mode")]
         public MonoBehaviour locomotionComponent;
+
+        [Tooltip("How controller locomotion actions should behave in this mode")]
+        public ControllerMotionMode controllerMotionMode = ControllerMotionMode.Auto;
 
         [Tooltip("Extra GameObjects to enable with this mode (e.g. teleport ray GO)")]
         public GameObject[] additionalObjects;
@@ -53,12 +59,8 @@ public class LocomotionSwitcher : MonoBehaviour
     [Tooltip("Jump Provider script — to be disabled in automove")]
     public Behaviour jumpProvider;
 
-    [Tooltip("AutoLocomotion script — for the rail-style waypoint mode")]
-    public AutoLocomotion autoMove;
-
-    [Header("Abilities")]
-    [Tooltip("Jump Provider script — to be disabled in automove")]
-    public Behaviour jumpProvider;
+    [Header("Controller Input Managers")]
+    public ControllerInputActionManager[] controllerInputManagers;
 
     // -------------------------------------------------------------------------
     // Inspector — Menu
@@ -261,6 +263,7 @@ public class LocomotionSwitcher : MonoBehaviour
         Debug.Log($"LocomotionSwitcher: '{locomotionOptions[index].displayName}' | Jump Enabled: {!isAutoMoveActive}");
     }
 
+    // AI?
     private void SyncControllerInputManagers(int index)
     {
         if (controllerInputManagers == null) return;
@@ -268,7 +271,7 @@ public class LocomotionSwitcher : MonoBehaviour
         foreach (var m in controllerInputManagers)
             if (m != null) m.smoothMotionEnabled = smooth;
     }
-
+    // AI?  
     private static bool ResolveSmoothMotion(LocomotionOption opt)
     {
         if (IsAutoMoveOption(opt)) return false;
@@ -286,7 +289,7 @@ public class LocomotionSwitcher : MonoBehaviour
             return false;
         return true;
     }
-
+    // AI?
     private static bool IsAutoMoveOption(LocomotionOption opt)
     {
         if (opt == null)

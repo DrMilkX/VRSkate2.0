@@ -1484,6 +1484,7 @@ GameObject:
   - component: {fileID: 5401256066260395552}
   - component: {fileID: 6945293727451653906}
   - component: {fileID: 3330167523358900500}
+  - component: {fileID: 7000756237053807613}
   m_Layer: 2
   m_Name: Player
   m_TagString: Player
@@ -1613,14 +1614,20 @@ MonoBehaviour:
     locomotionComponent: {fileID: 1127112702747882017}
     controllerMotionMode: 1
     additionalObjects: []
-  - displayName: Teleport
+  - displayName: Teleportion
     locomotionComponent: {fileID: 3330167523358900500}
     controllerMotionMode: 2
     additionalObjects:
     - {fileID: 4982382025140762508}
-    - {fileID: 4742689660064860672}
+    - {fileID: 4982382025140762508}
+  - displayName: Auto Movement
+    locomotionComponent: {fileID: 7000756237053807613}
+    controllerMotionMode: 2
+    additionalObjects: []
   headset: {fileID: 1668185867258752115}
   hoverboard: {fileID: 0}
+  autoMove: {fileID: 0}
+  jumpProvider: {fileID: 4367594795889862473}
   controllerInputManagers:
   - {fileID: 3519195019789244051}
   - {fileID: 7892705054034031374}
@@ -1731,6 +1738,27 @@ MonoBehaviour:
   m_Mediator: {fileID: 8340889912422940711}
   m_TransformationPriority: 0
   m_DelayTime: 0
+--- !u!114 &7000756237053807613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6982593383981873243}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d457b4586d33c1649ac047f274ba6ad6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutoLocomotion
+  waypoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  speed: 10
+  rotationSpeed: 10
+  arrivalDistance: 0.15
+  loopWaypoints: 1
+  advanceAction: {fileID: -8574369098851708097, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  xrOrigin: {fileID: 0}
 --- !u!1 &7371762105286864763
 GameObject:
   m_ObjectHideFlags: 0
@@ -2672,6 +2700,10 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2761784063978902504, guid: c1800acf6366418a9b5f610249000331, type: 3}
+      propertyPath: m_Parameters.widthMultiplier
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 2761784063978902504, guid: c1800acf6366418a9b5f610249000331, type: 3}
       propertyPath: m_Parameters.numCornerVertices
       value: 4
       objectReference: {fileID: 0}
@@ -2826,6 +2858,10 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2761784063978902504, guid: c1800acf6366418a9b5f610249000331, type: 3}
+      propertyPath: m_Parameters.widthMultiplier
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 2761784063978902504, guid: c1800acf6366418a9b5f610249000331, type: 3}
       propertyPath: m_Parameters.numCornerVertices
       value: 4
       objectReference: {fileID: 0}
@@ -2894,11 +2930,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c1800acf6366418a9b5f610249000331, type: 3}
---- !u!1 &4742689660064860672 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2761784063978902507, guid: c1800acf6366418a9b5f610249000331, type: 3}
-  m_PrefabInstance: {fileID: 7458727235354728939}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4742689660064860673 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2761784063978902506, guid: c1800acf6366418a9b5f610249000331, type: 3}
@@ -2909,7 +2940,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2761784063978902503, guid: c1800acf6366418a9b5f610249000331, type: 3}
   m_PrefabInstance: {fileID: 7458727235354728939}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4742689660064860672}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6803edce0201f574f923fd9d10e5b30a, type: 3}

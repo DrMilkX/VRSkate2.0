@@ -1,24 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR;
+using UnityEngine.InputSystem;
+using Unity.XR.CoreUtils;
+
 public class AutoLocomotion : MonoBehaviour
 {
+    [Header("Route")]
     public GameObject[] waypoints;
-    int currentWP = 0;
-
     public float speed = 10.0f;
-
-    [Tooltip("How close the rig must get to a waypoint before it waits for trigger input.")]
+    public float rotationSpeed = 10.0f;
     public float arrivalDistance = 0.15f;
-
-    [Tooltip("If true, the route loops back to the first waypoint after the last one.")]
     public bool loopWaypoints = true;
 
-    private bool waitingForTrigger = false;
-    private bool triggerWasPressed = false;
+    [Header("Input")]
+    public InputActionReference advanceAction;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [Header("VR Rig")]
+    [Tooltip("Leave empty to auto-detect on this GameObject")]
+    public XROrigin xrOrigin;
+
+    private int currentWP = 0;
+    private bool waitingForTrigger = false;
+    private bool advanceWasPressed = false;
+
     void Start()
     {
         if (waypoints == null || waypoints.Length == 0)
@@ -28,41 +31,82 @@ public class AutoLocomotion : MonoBehaviour
             return;
         }
 
+        if (xrOrigin == null)
+            xrOrigin = GetComponent<XROrigin>();
+
         currentWP = Mathf.Clamp(currentWP, 0, waypoints.Length - 1);
+
+        if (advanceAction != null)
+            advanceAction.action.Enable();
     }
 
-    // Update is called once per frame
     void Update()
     {
-
         if (waypoints == null || waypoints.Length == 0)
             return;
 
-        bool triggerPressed = IsAnyTriggerPressed();
+        HandleAdvanceInput();
 
         if (waitingForTrigger)
-        {
-            if (triggerPressed && !triggerWasPressed)
-                AdvanceWaypoint();
-
-            triggerWasPressed = triggerPressed;
             return;
-        }
 
         Transform target = waypoints[currentWP].transform;
-        Vector3 targetPosition = target.position;
+        
+        // 1. Calculate physical room offset (ignore Y axis to prevent sinking into the floor)
+        Vector3 cameraOffset = xrOrigin.Camera.transform.position - xrOrigin.transform.position;
+        cameraOffset.y = 0; 
+        
+        // 2. Adjust target position so the HEAD arrives at the waypoint, not the floor origin
+        Vector3 targetPosition = target.position - cameraOffset;
 
-        if (Vector3.Distance(transform.position, targetPosition) <= arrivalDistance)
+        // Flatten distance check to X/Z plane 
+        Vector3 currentPosFlat = new Vector3(xrOrigin.transform.position.x, 0, xrOrigin.transform.position.z);
+        Vector3 targetPosFlat = new Vector3(targetPosition.x, 0, targetPosition.z);
+
+        if (Vector3.Distance(currentPosFlat, targetPosFlat) <= arrivalDistance)
         {
-            transform.position = targetPosition;
+            xrOrigin.transform.position = targetPosition;
             waitingForTrigger = true;
-            triggerWasPressed = triggerPressed;
             return;
         }
 
-        transform.LookAt(targetPosition);
-        transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
-        triggerWasPressed = triggerPressed;
+        // 3. Smoothly rotate the rig AROUND the camera to prevent pendulum motion sickness
+        Vector3 lookDirection = target.position - xrOrigin.Camera.transform.position;
+        lookDirection.y = 0; 
+        
+        if (lookDirection != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
+            Quaternion currentRotation = xrOrigin.transform.rotation;
+            Quaternion nextRotation = Quaternion.Slerp(currentRotation, targetRotation, rotationSpeed * Time.deltaTime);
+            
+            // Calculate the difference in Y rotation for this frame
+            float angleDelta = Mathf.DeltaAngle(currentRotation.eulerAngles.y, nextRotation.eulerAngles.y);
+            
+            // Pivot the world around the user's physical head
+            xrOrigin.RotateAroundCameraUsingOriginUp(angleDelta);
+        }
+
+        // 4. Move the rig to the offset target
+        xrOrigin.transform.position = Vector3.MoveTowards(xrOrigin.transform.position, targetPosition, speed * Time.deltaTime);
+    }
+
+    private void HandleAdvanceInput()
+    {
+        bool advancePressed = IsAdvancePressed();
+
+        if (advancePressed && !advanceWasPressed)
+            OnAdvancePressed();
+
+        advanceWasPressed = advancePressed;
+    }
+
+    private void OnAdvancePressed()
+    {
+        if (!waitingForTrigger)
+            return;
+
+        AdvanceWaypoint();
     }
 
     private void AdvanceWaypoint()
@@ -71,38 +115,39 @@ public class AutoLocomotion : MonoBehaviour
         {
             if (!loopWaypoints)
             {
+                Debug.Log("AutoLocomotion: Reached the last waypoint.");
                 waitingForTrigger = true;
-                return;
+                return; 
             }
-
             currentWP = 0;
+            Debug.Log("AutoLocomotion: Looping back to the first waypoint.");
         }
         else
         {
             currentWP++;
+            Debug.Log($"AutoLocomotion: Advanced to waypoint {currentWP} - {waypoints[currentWP].name}");
         }
-
         waitingForTrigger = false;
     }
 
-    private static bool IsAnyTriggerPressed()
+    private bool IsAdvancePressed()
     {
-        List<InputDevice> devices = new List<InputDevice>();
-        InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.Controller | InputDeviceCharacteristics.Left, devices);
-        InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.Controller | InputDeviceCharacteristics.Right, devices);
+        if (advanceAction == null || advanceAction.action == null)
+            return false;
 
-        foreach (var device in devices)
+        if (!advanceAction.action.enabled)
+            advanceAction.action.Enable();
+        if (advanceAction.action.IsPressed())
         {
-            if (!device.isValid)
-                continue;
-
-            if (device.TryGetFeatureValue(CommonUsages.triggerButton, out bool triggerButton) && triggerButton)
-                return true;
-
-            if (device.TryGetFeatureValue(CommonUsages.trigger, out float triggerValue) && triggerValue > 0.5f)
-                return true;
+            Debug.Log($"Advance Action Pressed: {advanceAction.action.IsPressed()}");
         }
+        
+        return advanceAction.action.IsPressed();
+    }
 
-        return false;
+    private void OnDisable()
+    {
+        if (advanceAction != null)
+            advanceAction.action.Disable();
     }
 }

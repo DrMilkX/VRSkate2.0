@@ -52,6 +52,13 @@ public class LocomotionSwitcher : MonoBehaviour
     [Tooltip("HoverboardLocomotion script — for the settings submenu")]
     public HoverboardLocomotion hoverboard;
 
+    [Tooltip("AutoLocomotion script — for the rail-style waypoint mode")]
+    public AutoLocomotion autoMove;
+
+    [Header("Abilities")]
+    [Tooltip("Jump Provider script — to be disabled in automove")]
+    public Behaviour jumpProvider;
+
     [Header("Controller Input Managers")]
     public ControllerInputActionManager[] controllerInputManagers;
 
@@ -118,6 +125,9 @@ public class LocomotionSwitcher : MonoBehaviour
         if (hoverboard == null)
             hoverboard = GetComponent<HoverboardLocomotion>();
 
+        if (autoMove == null)
+            autoMove = GetComponent<AutoLocomotion>();
+
         if (controllerInputManagers == null || controllerInputManagers.Length == 0)
             controllerInputManagers = GetComponentsInChildren<ControllerInputActionManager>(true);
 
@@ -146,12 +156,12 @@ public class LocomotionSwitcher : MonoBehaviour
     private void CacheHoverboardDefaults()
     {
         if (hoverboard == null) return;
-        defaultBrakeDeceleration      = hoverboard.brakeDeceleration;
-        defaultCrouchSpeedMultiplier  = hoverboard.crouchSpeedMultiplier;
-        defaultCarveSensitivity       = hoverboard.carveSensitivity;
-        defaultCarveDamping           = hoverboard.carveDamping;
-        defaultBoardHoverHeight       = hoverboard.boardHoverHeight;
-        defaultWallDetectionDistance  = hoverboard.wallDetectionDistance;
+        defaultBrakeDeceleration = hoverboard.brakeDeceleration;
+        defaultCrouchSpeedMultiplier = hoverboard.crouchSpeedMultiplier;
+        defaultCarveSensitivity = hoverboard.carveSensitivity;
+        defaultCarveDamping = hoverboard.carveDamping;
+        defaultBoardHoverHeight = hoverboard.boardHoverHeight;
+        defaultWallDetectionDistance = hoverboard.wallDetectionDistance;
     }
 
     // -------------------------------------------------------------------------
@@ -168,7 +178,7 @@ public class LocomotionSwitcher : MonoBehaviour
         bool bPressed = false;
         foreach (var device in rightControllers)
             if (device.TryGetFeatureValue(CommonUsages.secondaryButton, out bool val) && val)
-                { bPressed = true; break; }
+            { bPressed = true; break; }
 
         if (bPressed && !bWasPressed)
             SetMenuVisible(!menuOpen);
@@ -227,6 +237,15 @@ public class LocomotionSwitcher : MonoBehaviour
     {
         if (index < 0 || index >= locomotionOptions.Count) return;
 
+        // Check if the newly selected mode is AutoMove
+        bool isAutoMoveActive = IsAutoMoveOption(locomotionOptions[index]);
+
+        // Disable jump provider if AutoMove is active, otherwise enable it
+        if (jumpProvider != null)
+        {
+            jumpProvider.enabled = !isAutoMoveActive;
+        }
+
         for (int i = 0; i < locomotionOptions.Count; i++)
         {
             bool active = (i == index);
@@ -241,7 +260,8 @@ public class LocomotionSwitcher : MonoBehaviour
         SyncControllerInputManagers(index);
         activeIndex = index;
         RefreshLocomotionHighlights();
-        Debug.Log($"LocomotionSwitcher: '{locomotionOptions[index].displayName}'");
+        // Debug.Log($"LocomotionSwitcher: '{locomotionOptions[index].displayName}'");
+        Debug.Log($"LocomotionSwitcher: '{locomotionOptions[index].displayName}' | Jump Enabled: {!isAutoMoveActive}");
     }
 
     private void SyncControllerInputManagers(int index)
@@ -254,6 +274,7 @@ public class LocomotionSwitcher : MonoBehaviour
 
     private static bool ResolveSmoothMotion(LocomotionOption opt)
     {
+        if (IsAutoMoveOption(opt)) return false;
         if (opt.controllerMotionMode == LocomotionOption.ControllerMotionMode.SmoothMotion) return true;
         if (opt.controllerMotionMode == LocomotionOption.ControllerMotionMode.Teleport) return false;
         if (opt.locomotionComponent != null)
@@ -267,6 +288,27 @@ public class LocomotionSwitcher : MonoBehaviour
             opt.displayName.IndexOf("teleport", System.StringComparison.OrdinalIgnoreCase) >= 0)
             return false;
         return true;
+    }
+
+    private static bool IsAutoMoveOption(LocomotionOption opt)
+    {
+        if (opt == null)
+            return false;
+
+        if (opt.locomotionComponent is AutoLocomotion)
+            return true;
+
+        if (!string.IsNullOrWhiteSpace(opt.displayName))
+        {
+            if (opt.displayName.IndexOf("auto", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                return true;
+            if (opt.displayName.IndexOf("rail", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                return true;
+            if (opt.displayName.IndexOf("waypoint", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                return true;
+        }
+
+        return false;
     }
 
     // -------------------------------------------------------------------------
@@ -290,9 +332,9 @@ public class LocomotionSwitcher : MonoBehaviour
         rt.sizeDelta = new Vector2(420f, 700f);
         rt.localScale = Vector3.one * 0.001f;
 
-        mainPanel     = BuildMainPanel(menuRoot.transform);
+        mainPanel = BuildMainPanel(menuRoot.transform);
         settingsPanel = BuildSettingsPanel(menuRoot.transform);
-        scenePanel    = BuildScenePanel(menuRoot.transform);
+        scenePanel = BuildScenePanel(menuRoot.transform);
     }
 
     // ── Main panel ────────────────────────────────────────────────────────────
@@ -321,7 +363,7 @@ public class LocomotionSwitcher : MonoBehaviour
 
         // Submenus
         CreateButton(panel.transform, "Board Settings  >", () => ShowPanel(settingsPanel));
-        CreateButton(panel.transform, "Switch Scene  >",   () => ShowPanel(scenePanel));
+        CreateButton(panel.transform, "Switch Scene  >", () => ShowPanel(scenePanel));
 
         CreateDivider(panel.transform);
         CreateButton(panel.transform, "[ Close ]", () => SetMenuVisible(false));
@@ -339,17 +381,17 @@ public class LocomotionSwitcher : MonoBehaviour
 
         if (hoverboard != null)
         {
-            CreateSliderRow(panel.transform, "Brake Decel",      0.1f, 10f,  hoverboard.brakeDeceleration,
+            CreateSliderRow(panel.transform, "Brake Decel", 0.1f, 10f, hoverboard.brakeDeceleration,
                 v => hoverboard.brakeDeceleration = v);
-            CreateSliderRow(panel.transform, "Crouch Speed",     0f,   8f,   hoverboard.crouchSpeedMultiplier,
+            CreateSliderRow(panel.transform, "Crouch Speed", 0f, 8f, hoverboard.crouchSpeedMultiplier,
                 v => hoverboard.crouchSpeedMultiplier = v);
-            CreateSliderRow(panel.transform, "Carve Sensitivity",0f,   3f,   hoverboard.carveSensitivity,
+            CreateSliderRow(panel.transform, "Carve Sensitivity", 0f, 3f, hoverboard.carveSensitivity,
                 v => hoverboard.carveSensitivity = v);
-            CreateSliderRow(panel.transform, "Carve Damping",    0f,   20f,  hoverboard.carveDamping,
+            CreateSliderRow(panel.transform, "Carve Damping", 0f, 20f, hoverboard.carveDamping,
                 v => hoverboard.carveDamping = v);
-            CreateSliderRow(panel.transform, "Hover Height",     -1f,   1f, hoverboard.boardHoverHeight,
+            CreateSliderRow(panel.transform, "Hover Height", -1f, 1f, hoverboard.boardHoverHeight,
                 v => hoverboard.boardHoverHeight = v);
-            CreateSliderRow(panel.transform, "Wall Detect Dist", 0.1f, 3f,   hoverboard.wallDetectionDistance,
+            CreateSliderRow(panel.transform, "Wall Detect Dist", 0.1f, 3f, hoverboard.wallDetectionDistance,
                 v => hoverboard.wallDetectionDistance = v);
         }
         else
@@ -369,12 +411,12 @@ public class LocomotionSwitcher : MonoBehaviour
     private void ResetHoverboardDefaults()
     {
         if (hoverboard == null) return;
-        hoverboard.brakeDeceleration     = defaultBrakeDeceleration;
-        hoverboard.crouchSpeedMultiplier  = defaultCrouchSpeedMultiplier;
-        hoverboard.carveSensitivity       = defaultCarveSensitivity;
-        hoverboard.carveDamping           = defaultCarveDamping;
-        hoverboard.boardHoverHeight       = defaultBoardHoverHeight;
-        hoverboard.wallDetectionDistance  = defaultWallDetectionDistance;
+        hoverboard.brakeDeceleration = defaultBrakeDeceleration;
+        hoverboard.crouchSpeedMultiplier = defaultCrouchSpeedMultiplier;
+        hoverboard.carveSensitivity = defaultCarveSensitivity;
+        hoverboard.carveDamping = defaultCarveDamping;
+        hoverboard.boardHoverHeight = defaultBoardHoverHeight;
+        hoverboard.wallDetectionDistance = defaultWallDetectionDistance;
 
         // Rebuild settings panel so sliders snap back to default positions
         Destroy(settingsPanel);
@@ -478,7 +520,7 @@ public class LocomotionSwitcher : MonoBehaviour
         Button btn = go.AddComponent<Button>();
         ColorBlock cb = btn.colors;
         cb.highlightedColor = new Color(0.3f, 0.3f, 0.9f, 1f);
-        cb.pressedColor     = new Color(0.2f, 0.6f, 1f, 1f);
+        cb.pressedColor = new Color(0.2f, 0.6f, 1f, 1f);
         btn.colors = cb;
         btn.targetGraphic = bg;
         btn.onClick.AddListener(() => onClick());
@@ -620,12 +662,12 @@ public class LocomotionSwitcher : MonoBehaviour
         hRt.anchorMax = new Vector2(0f, 1f);
 
         Slider slider = go.AddComponent<Slider>();
-        slider.fillRect   = fillRt;
+        slider.fillRect = fillRt;
         slider.handleRect = hRt;
         slider.targetGraphic = handleImg;
         slider.minValue = min;
         slider.maxValue = max;
-        slider.value    = value;
+        slider.value = value;
         slider.wholeNumbers = false;
 
         ColorBlock cb = slider.colors;

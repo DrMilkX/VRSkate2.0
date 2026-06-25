@@ -119,7 +119,7 @@ MonoBehaviour:
   m_UIScroll: {fileID: -6756787485274679044, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   m_SmoothMotionEnabled: 0
   m_SmoothTurnEnabled: 0
-  m_NearFarEnableTeleportDuringNearInteraction: 1
+  m_NearFarEnableTeleportDuringNearInteraction: 0
   m_UIScrollingEnabled: 1
   m_RayInteractorChanged:
     m_PersistentCalls:
@@ -1155,7 +1155,7 @@ MonoBehaviour:
   m_UIScroll: {fileID: 2464016903823916871, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   m_SmoothMotionEnabled: 1
   m_SmoothTurnEnabled: 0
-  m_NearFarEnableTeleportDuringNearInteraction: 1
+  m_NearFarEnableTeleportDuringNearInteraction: 0
   m_UIScrollingEnabled: 1
   m_RayInteractorChanged:
     m_PersistentCalls:
@@ -1485,6 +1485,7 @@ GameObject:
   - component: {fileID: 6945293727451653906}
   - component: {fileID: 3330167523358900500}
   - component: {fileID: 7000756237053807613}
+  - component: {fileID: 6837462828575963892}
   m_Layer: 2
   m_Name: Player
   m_TagString: Player
@@ -1608,21 +1609,21 @@ MonoBehaviour:
   locomotionOptions:
   - displayName: Skateboard
     locomotionComponent: {fileID: 5401256066260395552}
-    controllerMotionMode: 2
     additionalObjects: []
   - displayName: Joystick
     locomotionComponent: {fileID: 1127112702747882017}
-    controllerMotionMode: 1
     additionalObjects: []
   - displayName: Teleportion
     locomotionComponent: {fileID: 3330167523358900500}
-    controllerMotionMode: 2
     additionalObjects:
     - {fileID: 4982382025140762508}
     - {fileID: 4982382025140762508}
   - displayName: Auto Movement
     locomotionComponent: {fileID: 7000756237053807613}
     controllerMotionMode: 2
+    additionalObjects: []
+  - displayName: Walking
+    locomotionComponent: {fileID: 6837462828575963892}
     additionalObjects: []
   headset: {fileID: 1668185867258752115}
   hoverboard: {fileID: 0}
@@ -1759,6 +1760,27 @@ MonoBehaviour:
   loopWaypoints: 1
   advanceAction: {fileID: -8574369098851708097, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   xrOrigin: {fileID: 0}
+--- !u!114 &6837462828575963892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6982593383981873243}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce2f5ffe0ffc48446bf82a65df940913, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ArmSwingLocomotion
+  headset: {fileID: 1668185867258752115}
+  leftController: {fileID: 201187414606149231}
+  rightController: {fileID: 865150372030851205}
+  speedMultiplier: 2.5
+  deadzone: 0.3
+  maxSpeed: 5
+  acceleration: 5
+  deceleration: 6
+  alternatingBonus: 1.25
 --- !u!1 &7371762105286864763
 GameObject:
   m_ObjectHideFlags: 0

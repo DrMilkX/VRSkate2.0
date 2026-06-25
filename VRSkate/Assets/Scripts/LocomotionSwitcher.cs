@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit.UI;
-using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
 using UnityEngine.SceneManagement;
 using TMPro;
 
@@ -23,16 +22,11 @@ public class LocomotionSwitcher : MonoBehaviour
     [System.Serializable]
     public class LocomotionOption
     {
-        public enum ControllerMotionMode { Auto, SmoothMotion, Teleport }
-
         [Tooltip("Name shown in the menu")]
         public string displayName;
 
         [Tooltip("The MonoBehaviour that drives this locomotion mode")]
         public MonoBehaviour locomotionComponent;
-
-        [Tooltip("How controller locomotion actions should behave in this mode")]
-        public ControllerMotionMode controllerMotionMode = ControllerMotionMode.Auto;
 
         [Tooltip("Extra GameObjects to enable with this mode (e.g. teleport ray GO)")]
         public GameObject[] additionalObjects;
@@ -59,8 +53,12 @@ public class LocomotionSwitcher : MonoBehaviour
     [Tooltip("Jump Provider script — to be disabled in automove")]
     public Behaviour jumpProvider;
 
-    [Header("Controller Input Managers")]
-    public ControllerInputActionManager[] controllerInputManagers;
+    [Tooltip("AutoLocomotion script — for the rail-style waypoint mode")]
+    public AutoLocomotion autoMove;
+
+    [Header("Abilities")]
+    [Tooltip("Jump Provider script — to be disabled in automove")]
+    public Behaviour jumpProvider;
 
     // -------------------------------------------------------------------------
     // Inspector — Menu
@@ -257,7 +255,6 @@ public class LocomotionSwitcher : MonoBehaviour
                     if (go != null) go.SetActive(active);
         }
 
-        SyncControllerInputManagers(index);
         activeIndex = index;
         RefreshLocomotionHighlights();
         // Debug.Log($"LocomotionSwitcher: '{locomotionOptions[index].displayName}'");

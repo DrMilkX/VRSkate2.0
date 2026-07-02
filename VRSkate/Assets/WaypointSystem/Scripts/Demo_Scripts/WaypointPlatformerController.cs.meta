@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: 78ac6c0f587731b4a951b47a42060b51
+AssetOrigin:
+  serializedVersion: 1
+  productId: 317953
+  packageName: Waypoint Marker System
+  packageVersion: 3.0
+  assetPath: Assets/WaypointSystem/Scripts/Demo_Scripts/WaypointPlatformerController.cs
+  uploadId: 844894

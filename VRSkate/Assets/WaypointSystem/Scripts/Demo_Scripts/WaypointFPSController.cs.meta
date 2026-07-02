@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: e1199db86fbfadd40836456cac4fa03f
+AssetOrigin:
+  serializedVersion: 1
+  productId: 317953
+  packageName: Waypoint Marker System
+  packageVersion: 3.0
+  assetPath: Assets/WaypointSystem/Scripts/Demo_Scripts/WaypointFPSController.cs
+  uploadId: 844894

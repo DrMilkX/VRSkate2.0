@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 6ae40223d59c7ad47a7d2353f60f96da
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 317953
+  packageName: Waypoint Marker System
+  packageVersion: 3.0
+  assetPath: Assets/WaypointSystem/Demo/DistanceTextSettings.asset
+  uploadId: 844894

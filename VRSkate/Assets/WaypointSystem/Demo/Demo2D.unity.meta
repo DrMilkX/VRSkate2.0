@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 87d92f6dc738d544da3b086e97a60e1d
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 317953
+  packageName: Waypoint Marker System
+  packageVersion: 3.0
+  assetPath: Assets/WaypointSystem/Demo/Demo2D.unity
+  uploadId: 844894

@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: 9d59cb2f261b46b4ba532a1c0cadd195
+AssetOrigin:
+  serializedVersion: 1
+  productId: 317953
+  packageName: Waypoint Marker System
+  packageVersion: 3.0
+  assetPath: Assets/WaypointSystem/Scripts/WaypointUIManager.cs
+  uploadId: 844894

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 7831aca3f64193141a3f4963c1a0878f
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 317953
+  packageName: Waypoint Marker System
+  packageVersion: 3.0
+  assetPath: Assets/WaypointSystem/Demo/WaypointSettings2D.asset
+  uploadId: 844894

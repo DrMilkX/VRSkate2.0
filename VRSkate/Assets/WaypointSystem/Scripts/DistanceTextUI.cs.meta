@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: 746299fe51a46b646a00214e5ba34357
+AssetOrigin:
+  serializedVersion: 1
+  productId: 317953
+  packageName: Waypoint Marker System
+  packageVersion: 3.0
+  assetPath: Assets/WaypointSystem/Scripts/DistanceTextUI.cs
+  uploadId: 844894

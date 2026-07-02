@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 22f58613e70b4f944b9447892f34b727
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 317953
+  packageName: Waypoint Marker System
+  packageVersion: 3.0
+  assetPath: Assets/WaypointSystem/Demo/Marker.prefab
+  uploadId: 844894

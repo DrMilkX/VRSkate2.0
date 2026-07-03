@@ -26,7 +26,7 @@ namespace WrightAngle.Waypoint
         public GameObject MarkerPrefab;
 
         [Tooltip("The maximum distance (in world units) from the camera at which a waypoint marker remains visible.")]
-        public float MaxVisibleDistance = 1000f;
+        public float MaxVisibleDistance = 10000f;
 
         [Tooltip("When using Mode2D, enable this to calculate the MaxVisibleDistance check using only X and Y axes, ignoring Z.")]
         public bool IgnoreZAxisForDistance2D = true;
@@ -37,7 +37,7 @@ namespace WrightAngle.Waypoint
 
         [Tooltip("Define the distance (in pixels) from the screen edges where off-screen indicators will be positioned.")]
         [Range(0f, 100f)]
-        public float ScreenEdgeMargin = 50f;
+        public float ScreenEdgeMargin = 25f;
 
         [Tooltip("Additional padding (in pixels) added to ScreenEdgeMargin to prevent distance text from going off-screen. Set this based on your text size.")]
         [Range(0f, 150f)]

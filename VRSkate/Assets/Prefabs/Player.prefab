@@ -1609,12 +1609,15 @@ MonoBehaviour:
   locomotionOptions:
   - displayName: Skateboard
     locomotionComponent: {fileID: 5401256066260395552}
+    controllerMotionMode: 0
     additionalObjects: []
   - displayName: Joystick
     locomotionComponent: {fileID: 1127112702747882017}
+    controllerMotionMode: 0
     additionalObjects: []
   - displayName: Teleportion
     locomotionComponent: {fileID: 3330167523358900500}
+    controllerMotionMode: 0
     additionalObjects:
     - {fileID: 4982382025140762508}
     - {fileID: 4982382025140762508}
@@ -1624,6 +1627,7 @@ MonoBehaviour:
     additionalObjects: []
   - displayName: Walking
     locomotionComponent: {fileID: 6837462828575963892}
+    controllerMotionMode: 0
     additionalObjects: []
   headset: {fileID: 1668185867258752115}
   hoverboard: {fileID: 0}
@@ -1751,11 +1755,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d457b4586d33c1649ac047f274ba6ad6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AutoLocomotion
-  waypoints:
-  - {fileID: 0}
-  - {fileID: 0}
+  checkpointSequence: {fileID: 0}
+  waypointVisibilityController: {fileID: 0}
+  npcCharacters: []
   speed: 10
   rotationSpeed: 10
+  npcLookRotationSpeed: 180
+  autoAdvanceOnArrival: 1
   arrivalDistance: 0.15
   loopWaypoints: 1
   advanceAction: {fileID: -8574369098851708097, guid: c348712bda248c246b8c49b3db54643f, type: 3}

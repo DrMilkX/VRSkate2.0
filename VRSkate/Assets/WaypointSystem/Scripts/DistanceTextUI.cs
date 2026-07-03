@@ -24,6 +24,13 @@ namespace WrightAngle.Waypoint
         [Tooltip("When enabled, the distance text will counter-rotate to remain upright, even when the marker rotates (e.g., off-screen indicators).")]
         [SerializeField] private bool keepUpright = true;
 
+        [Header("Color Override")]
+        [Tooltip("Force the text to use a single color instead of the distance color ramp. This is useful when you want the HUD text to stay white in VR.")]
+        [SerializeField] private bool forceSingleColor = true;
+
+        [Tooltip("The color used when Force Single Color is enabled.")]
+        [SerializeField] private Color forcedTextColor = Color.white;
+
         // Cached components
         private RectTransform distanceTextRectTransform;
         private Transform uprightReferenceTransform;
@@ -175,7 +182,7 @@ namespace WrightAngle.Waypoint
             distanceText.text = settings.FormatDistance(distance);
 
             // Apply distance-based color if enabled
-            distanceText.color = settings.GetDistanceColor(distance);
+            distanceText.color = forceSingleColor ? forcedTextColor : settings.GetDistanceColor(distance);
         }
 
         /// <summary>

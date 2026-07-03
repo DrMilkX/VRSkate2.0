@@ -66,6 +66,15 @@ namespace WrightAngle.Waypoint
             if (parentCanvas != null)
             {
                 _cachedUICamera = (parentCanvas.renderMode == RenderMode.ScreenSpaceOverlay) ? null : parentCanvas.worldCamera;
+
+                if (parentCanvas.renderMode == RenderMode.ScreenSpaceOverlay && UnityEngine.XR.XRSettings.enabled)
+                {
+                    Debug.LogWarning($"<b>[{gameObject.name}] WaypointUIManager:</b> Parent canvas is set to Screen Space - Overlay while XR is enabled. If the markers appear in the desktop mirror but not in the headset, switch this canvas to Screen Space - Camera or World Space and assign the XR camera to worldCamera.", this);
+                }
+                else if (parentCanvas.renderMode == RenderMode.ScreenSpaceCamera && parentCanvas.worldCamera == null)
+                {
+                    Debug.LogWarning($"<b>[{gameObject.name}] WaypointUIManager:</b> Parent canvas is Screen Space - Camera but no worldCamera is assigned. In VR this usually means the UI will not appear in the headset until you assign the XR camera.", this);
+                }
             }
             
             // Set up the object pool for marker UI elements.
@@ -339,7 +348,7 @@ namespace WrightAngle.Waypoint
         {
             // Find all WaypointTarget components in the scene, including inactive ones initially.
             // Use FindObjectsByType for modern Unity versions and better performance options.
-            WaypointTarget[] allTargets = FindObjectsByType<WaypointTarget>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            WaypointTarget[] allTargets = FindObjectsByType<WaypointTarget>(FindObjectsInactive.Include);
             int activationCount = 0;
             foreach (WaypointTarget target in allTargets)
             {

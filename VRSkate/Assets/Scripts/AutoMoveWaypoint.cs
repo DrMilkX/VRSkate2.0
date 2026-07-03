@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.XR.CoreUtils;
@@ -5,9 +6,19 @@ using Unity.XR.CoreUtils;
 public class AutoLocomotion : MonoBehaviour
 {
     [Header("Route")]
-    public GameObject[] waypoints;
+    [Tooltip("Assign the shared checkpoint sequence holder here instead of populating a local array.")]
+    public WaypointCheckpointSequence checkpointSequence;
+
+    [Tooltip("Optional controller that keeps only the current waypoint marker visible.")]
+    public WaypointCheckpointVisibilityController waypointVisibilityController;
+
+    [Tooltip("NPC characters to face when reaching each checkpoint. Uses the current checkpoint index.")]
+    public GameObject[] npcCharacters;
+
     public float speed = 10.0f;
     public float rotationSpeed = 10.0f;
+    [Tooltip("How quickly the player turns to face the current NPC, in degrees per second.")]
+    public float npcLookRotationSpeed = 180.0f;
     public float arrivalDistance = 0.15f;
     public bool loopWaypoints = true;
 
@@ -21,20 +32,49 @@ public class AutoLocomotion : MonoBehaviour
     private int currentWP = 0;
     private bool waitingForTrigger = false;
     private bool advanceWasPressed = false;
+    private Coroutine npcLookRoutine;
 
     void Start()
     {
-        if (waypoints == null || waypoints.Length == 0)
+        if (checkpointSequence == null || checkpointSequence.Count == 0)
         {
-            Debug.LogWarning("AutoLocomotion: No waypoints assigned.", this);
+            Debug.LogWarning("AutoLocomotion: No checkpoint sequence assigned.", this);
             enabled = false;
             return;
+        }
+
+        if (npcCharacters == null || npcCharacters.Length == 0)
+        {
+            Debug.LogWarning("AutoLocomotion: No NPC characters assigned, so the player will move but not have a look target.", this);
+        }
+        else if (npcCharacters.Length != checkpointSequence.Count)
+        {
+            Debug.LogWarning($"AutoLocomotion: NPC count ({npcCharacters.Length}) does not match checkpoint count ({checkpointSequence.Count}). The player will still move on the waypoint route, but some checkpoints may not have a matching NPC look target.", this);
         }
 
         if (xrOrigin == null)
             xrOrigin = GetComponent<XROrigin>();
 
-        currentWP = Mathf.Clamp(currentWP, 0, waypoints.Length - 1);
+        if (xrOrigin == null || xrOrigin.Camera == null)
+        {
+            Debug.LogWarning("AutoLocomotion: XR Origin or headset camera is missing, so auto-move cannot run safely.", this);
+            enabled = false;
+            return;
+        }
+
+        if (waypointVisibilityController != null)
+        {
+            currentWP = Mathf.Clamp(waypointVisibilityController.CurrentWaypointIndex, 0, checkpointSequence.Count - 1);
+        }
+        else
+        {
+            currentWP = Mathf.Clamp(currentWP, 0, checkpointSequence.Count - 1);
+        }
+
+        if (waypointVisibilityController != null)
+        {
+            waypointVisibilityController.SetCurrentWaypoint(currentWP);
+        }
 
         if (advanceAction != null)
             advanceAction.action.Enable();
@@ -42,24 +82,36 @@ public class AutoLocomotion : MonoBehaviour
 
     void Update()
     {
-        if (waypoints == null || waypoints.Length == 0)
+        if (checkpointSequence == null || checkpointSequence.Count == 0)
             return;
+
+        if (xrOrigin == null || xrOrigin.Camera == null)
+        {
+            Debug.LogWarning("AutoLocomotion: XR Origin or headset camera became unavailable during auto-move.", this);
+            enabled = false;
+            return;
+        }
+
+        // REMOVED: The synchronization block that was forcibly unpausing the script
 
         HandleAdvanceInput();
 
         if (waitingForTrigger)
             return;
 
-        Transform target = waypoints[currentWP].transform;
-        
-        // 1. Calculate physical room offset (ignore Y axis to prevent sinking into the floor)
+        Transform target = checkpointSequence.GetCheckpoint(currentWP);
+        if (target == null)
+        {
+            Debug.LogWarning($"AutoLocomotion: Checkpoint {currentWP + 1} is missing from the sequence.", this);
+            enabled = false;
+            return;
+        }
+
         Vector3 cameraOffset = xrOrigin.Camera.transform.position - xrOrigin.transform.position;
         cameraOffset.y = 0; 
         
-        // 2. Adjust target position so the HEAD arrives at the waypoint, not the floor origin
         Vector3 targetPosition = target.position - cameraOffset;
 
-        // Flatten distance check to X/Z plane 
         Vector3 currentPosFlat = new Vector3(xrOrigin.transform.position.x, 0, xrOrigin.transform.position.z);
         Vector3 targetPosFlat = new Vector3(targetPosition.x, 0, targetPosition.z);
 
@@ -67,27 +119,24 @@ public class AutoLocomotion : MonoBehaviour
         {
             xrOrigin.transform.position = targetPosition;
             waitingForTrigger = true;
+            StartNpcLookRoutine();
             return;
         }
 
-        // 3. Smoothly rotate the rig AROUND the camera to prevent pendulum motion sickness
         Vector3 lookDirection = target.position - xrOrigin.Camera.transform.position;
         lookDirection.y = 0; 
         
-        if (lookDirection != Vector3.zero)
+        if (lookDirection.sqrMagnitude > 0.001f)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
-            Quaternion currentRotation = xrOrigin.transform.rotation;
-            Quaternion nextRotation = Quaternion.Slerp(currentRotation, targetRotation, rotationSpeed * Time.deltaTime);
+            float targetYaw = Quaternion.LookRotation(lookDirection).eulerAngles.y;
+            float currentYaw = xrOrigin.Camera.transform.eulerAngles.y;
             
-            // Calculate the difference in Y rotation for this frame
-            float angleDelta = Mathf.DeltaAngle(currentRotation.eulerAngles.y, nextRotation.eulerAngles.y);
+            float lerpedYaw = Mathf.LerpAngle(currentYaw, targetYaw, rotationSpeed * Time.deltaTime);
+            float angleDelta = Mathf.DeltaAngle(currentYaw, lerpedYaw);
             
-            // Pivot the world around the user's physical head
             xrOrigin.RotateAroundCameraUsingOriginUp(angleDelta);
         }
 
-        // 4. Move the rig to the offset target
         xrOrigin.transform.position = Vector3.MoveTowards(xrOrigin.transform.position, targetPosition, speed * Time.deltaTime);
     }
 
@@ -111,23 +160,102 @@ public class AutoLocomotion : MonoBehaviour
 
     private void AdvanceWaypoint()
     {
-        if (currentWP + 1 >= waypoints.Length)
+        if (waypointVisibilityController != null)
+        {
+            waypointVisibilityController.AdvanceWaypoint();
+            if (checkpointSequence != null && checkpointSequence.Count > 0)
+            {
+                currentWP = Mathf.Clamp(waypointVisibilityController.CurrentWaypointIndex, 0, checkpointSequence.Count - 1);
+            }
+            waitingForTrigger = false;
+            return;
+        }
+
+        int targetCount = checkpointSequence != null ? checkpointSequence.Count : 0;
+
+        if (currentWP + 1 >= targetCount)
         {
             if (!loopWaypoints)
             {
-                Debug.Log("AutoLocomotion: Reached the last waypoint.");
+                Debug.Log("AutoLocomotion: Reached the last checkpoint.");
                 waitingForTrigger = true;
                 return; 
             }
             currentWP = 0;
-            Debug.Log("AutoLocomotion: Looping back to the first waypoint.");
+            Debug.Log("AutoLocomotion: Looping back to the first checkpoint.");
         }
         else
         {
             currentWP++;
-            Debug.Log($"AutoLocomotion: Advanced to waypoint {currentWP} - {waypoints[currentWP].name}");
+            Debug.Log($"AutoLocomotion: Advanced to checkpoint {currentWP + 1} - {checkpointSequence.GetCheckpointName(currentWP)}");
         }
+
+        if (waypointVisibilityController != null)
+        {
+            waypointVisibilityController.SetCurrentWaypoint(currentWP);
+        }
+
         waitingForTrigger = false;
+    }
+
+    private void StartNpcLookRoutine()
+    {
+        if (npcLookRoutine != null)
+        {
+            StopCoroutine(npcLookRoutine);
+        }
+
+        npcLookRoutine = StartCoroutine(SmoothFaceCurrentNpc());
+    }
+
+    private IEnumerator SmoothFaceCurrentNpc()
+    {
+        if (xrOrigin == null || npcCharacters == null || currentWP < 0 || currentWP >= npcCharacters.Length)
+        {
+            waitingForTrigger = true;
+            yield break;
+        }
+
+        GameObject npc = npcCharacters[currentWP];
+        if (npc == null)
+        {
+            Debug.LogWarning($"AutoLocomotion: No NPC assigned for checkpoint {currentWP + 1}.", this);
+            waitingForTrigger = true;
+            yield break;
+        }
+
+        Transform npcTransform = npc.transform;
+        Debug.Log($"AutoLocomotion: Smoothly turning toward NPC '{npc.name}' at checkpoint {currentWP + 1}.", this);
+
+        while (true)
+        {
+            Vector3 targetDirection = npcTransform.position - xrOrigin.Camera.transform.position;
+            targetDirection.y = 0f;
+
+            if (targetDirection.sqrMagnitude < 0.0001f) break;
+
+            float targetYaw = Quaternion.LookRotation(targetDirection, Vector3.up).eulerAngles.y;
+            float currentYaw = xrOrigin.Camera.transform.eulerAngles.y;
+
+            float nextYaw = Mathf.MoveTowardsAngle(currentYaw, targetYaw, npcLookRotationSpeed * Time.deltaTime);
+            float angleDelta = Mathf.DeltaAngle(currentYaw, nextYaw);
+
+            if (Mathf.Abs(angleDelta) > 0.0001f)
+            {
+                xrOrigin.RotateAroundCameraUsingOriginUp(angleDelta);
+            }
+
+            if (Mathf.Abs(Mathf.DeltaAngle(xrOrigin.Camera.transform.eulerAngles.y, targetYaw)) <= 0.5f)
+            {
+                break;
+            }
+
+            yield return null;
+        }
+
+        // The turn is complete. We strictly wait for user input.
+        waitingForTrigger = true;
+        npcLookRoutine = null;
     }
 
     private bool IsAdvancePressed()
@@ -137,16 +265,18 @@ public class AutoLocomotion : MonoBehaviour
 
         if (!advanceAction.action.enabled)
             advanceAction.action.Enable();
-        if (advanceAction.action.IsPressed())
-        {
-            Debug.Log($"Advance Action Pressed: {advanceAction.action.IsPressed()}");
-        }
         
         return advanceAction.action.IsPressed();
     }
 
     private void OnDisable()
     {
+        if (npcLookRoutine != null)
+        {
+            StopCoroutine(npcLookRoutine);
+            npcLookRoutine = null;
+        }
+
         if (advanceAction != null)
             advanceAction.action.Disable();
     }

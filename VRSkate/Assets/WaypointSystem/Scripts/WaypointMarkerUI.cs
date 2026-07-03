@@ -346,13 +346,7 @@ namespace WrightAngle.Waypoint
             rectTransform.localScale = baseScale * currentScaleMultiplier * scaleFactor;
             
             // Calculate alpha/fade when approaching maximum distance (far away)
-            float alpha = 1f;
-            if (settings.UseFadeAtMaxDistance && distance > settings.MaxScaleDistance - settings.FadeRange)
-            {
-                // Fade from 1 at (MaxScaleDistance - FadeRange) to 0 at MaxScaleDistance
-                alpha = Mathf.Clamp01((settings.MaxScaleDistance - distance) / settings.FadeRange);
-            }
-            canvasGroup.alpha = alpha;
+            canvasGroup.alpha = 1f;
         }
 
         /// <summary>

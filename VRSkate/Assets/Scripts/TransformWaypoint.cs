@@ -35,6 +35,9 @@ public class TransformWaypoint : MonoBehaviour
         if (waypoints.Length == 0)
         {
             Debug.LogWarning("TransformWaypoint: No child transforms found to use as waypoints.", this);
+            // hide the arrow
+            arrowSprite.gameObject.SetActive(false);
+            arrowSprite = null;
             return;
         }
 
@@ -67,7 +70,7 @@ public class TransformWaypoint : MonoBehaviour
     void HideAllWaypoints()
     {
         foreach (Transform waypoint in waypoints){
-            waypoint.Find("Light")?.gameObject.SetActive(false);
+            waypoint.gameObject.SetActive(false);
         }
     }
 
@@ -75,7 +78,7 @@ public class TransformWaypoint : MonoBehaviour
     void ShowCurrentWaypoint()
     {
         if (currentWaypoint != null){
-            currentWaypoint.Find("Light")?.gameObject.SetActive(true);
+            currentWaypoint.gameObject.SetActive(true);
         }
     }
 

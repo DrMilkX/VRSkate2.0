@@ -3,7 +3,7 @@ using UnityEngine.Events;
 
 public class WaypointArea : MonoBehaviour
 {
-    [SerializeField] private UnityEvent onPlayerEnter;
+    public UnityEvent onPlayerEnter;
 
     private void OnTriggerEnter(Collider other)
     {

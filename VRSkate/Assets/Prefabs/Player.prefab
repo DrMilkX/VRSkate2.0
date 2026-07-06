@@ -1658,9 +1658,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6316aaf34976ff47a952aa3a41e976b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HoverboardLocomotion
-  triggerAction: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}
-  gripAction: {fileID: 187161793506945269, guid: c348712bda248c246b8c49b3db54643f, type: 3}
-  controllerRotationAction: {fileID: 5101698808175986029, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   cameraOffset: {fileID: 0}
   headset: {fileID: 1668185867258752115}
   hoverboardModel: {fileID: 6397913729488411876, guid: ec88222b6735b5345a6ba47a90ffdbb6, type: 3}
@@ -1761,7 +1758,6 @@ MonoBehaviour:
   speed: 10
   rotationSpeed: 10
   npcLookRotationSpeed: 180
-  autoAdvanceOnArrival: 1
   arrivalDistance: 0.15
   loopWaypoints: 1
   advanceAction: {fileID: -8574369098851708097, guid: c348712bda248c246b8c49b3db54643f, type: 3}

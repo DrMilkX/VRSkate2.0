@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
-using UnityEngine.InputSystem;
+// using UnityEngine.InputSystem;
 
 /// <summary>
 /// HoverboardLocomotion - Attach to your XR Origin GameObject.
@@ -17,25 +17,14 @@ using UnityEngine.InputSystem;
 ///
 /// Setup:
 ///   1. Attach this script to your XR Origin
-///   2. Assign the InputActionReferences in the Inspector
-///   3. Assign your Camera Offset transform
-///   4. Optionally assign a HoverboardModel transform (will be created if left empty)
+///   2. Assign your Camera Offset transform
+///   3. Optionally assign a HoverboardModel transform (will be created if left empty)
 /// </summary>
 public class HoverboardLocomotion : MonoBehaviour
 {
     // -------------------------------------------------------------------------
     // Inspector fields — assign these in the Unity Inspector
     // -------------------------------------------------------------------------
-
-    [Header("Input Actions")]
-    [Tooltip("Right controller trigger — engage/brake")]
-    public InputActionReference triggerAction;
-
-    [Tooltip("Right controller grip — hold to carve")]
-    public InputActionReference gripAction;
-
-    [Tooltip("Right controller rotation — used for wrist roll carving")]
-    public InputActionReference controllerRotationAction;
 
     [Header("References")]
     [Tooltip("The Camera Offset child of XR Origin")]
@@ -117,6 +106,10 @@ public class HoverboardLocomotion : MonoBehaviour
     // Trigger edge detection (we want press events, not hold)
     private bool triggerWasPressed = false;
 
+    // Raw XR device polling — lets either controller engage/brake/carve
+    private List<UnityEngine.XR.InputDevice> leftControllers = new List<UnityEngine.XR.InputDevice>();
+    private List<UnityEngine.XR.InputDevice> rightControllers = new List<UnityEngine.XR.InputDevice>();
+
     // -------------------------------------------------------------------------
     // Unity lifecycle
     // -------------------------------------------------------------------------
@@ -151,11 +144,6 @@ public class HoverboardLocomotion : MonoBehaviour
 
         // Hoverboard starts hidden until board is engaged
         SetBoardVisible(false);
-
-        // Enable input actions (they may not auto-enable depending on your setup)
-        triggerAction?.action.Enable();
-        gripAction?.action.Enable();
-        controllerRotationAction?.action.Enable();
     }
 
     private void Update()
@@ -178,7 +166,7 @@ public class HoverboardLocomotion : MonoBehaviour
 
         UpdateBoardModelPosition();
 
-        if (Keyboard.current?.spaceKey.wasPressedThisFrame == true)
+        if (UnityEngine.InputSystem.Keyboard.current?.spaceKey.wasPressedThisFrame == true)
         {
             EBrake();
         }
@@ -241,11 +229,40 @@ public class HoverboardLocomotion : MonoBehaviour
     // Input handling
     // -------------------------------------------------------------------------
 
+    private void RefreshControllerDevices()
+    {
+        if (leftControllers.Count == 0)
+            InputDevices.GetDevicesWithCharacteristics(
+                InputDeviceCharacteristics.Left | InputDeviceCharacteristics.Controller,
+                leftControllers);
+
+        if (rightControllers.Count == 0)
+            InputDevices.GetDevicesWithCharacteristics(
+                InputDeviceCharacteristics.Right | InputDeviceCharacteristics.Controller,
+                rightControllers);
+    }
+
+    /// <summary>
+    /// Highest trigger value across both controllers, so either hand can engage/brake.
+    /// </summary>
+    private float GetCombinedTriggerValue()
+    {
+        RefreshControllerDevices();
+
+        float value = 0f;
+        foreach (var device in leftControllers)
+            if (device.TryGetFeatureValue(CommonUsages.trigger, out float v))
+                value = Mathf.Max(value, v);
+        foreach (var device in rightControllers)
+            if (device.TryGetFeatureValue(CommonUsages.trigger, out float v))
+                value = Mathf.Max(value, v);
+
+        return value;
+    }
+
     private void HandleTriggerInput()
     {
-        float triggerValue = triggerAction != null
-            ? triggerAction.action.ReadValue<float>()
-            : 0f;
+        float triggerValue = GetCombinedTriggerValue();
 
         bool triggerPressed = triggerValue > 0.5f;
 
@@ -296,8 +313,16 @@ public class HoverboardLocomotion : MonoBehaviour
 
     private bool IsGripHeld()
     {
-        if (gripAction == null) return false;
-        return gripAction.action.ReadValue<float>() > gripThreshold;
+        RefreshControllerDevices();
+
+        foreach (var device in leftControllers)
+            if (device.TryGetFeatureValue(CommonUsages.grip, out float v) && v > gripThreshold)
+                return true;
+        foreach (var device in rightControllers)
+            if (device.TryGetFeatureValue(CommonUsages.grip, out float v) && v > gripThreshold)
+                return true;
+
+        return false;
     }
 
     // -------------------------------------------------------------------------
@@ -387,9 +412,7 @@ public class HoverboardLocomotion : MonoBehaviour
         boardEngageHeadHeight = headset.position.y;
 
         // Decelerate
-        float triggerValue = triggerAction != null
-            ? triggerAction.action.ReadValue<float>()
-            : 0f;
+        float triggerValue = GetCombinedTriggerValue();
         speed_speed = Mathf.Max(0f, speed_speed - (brakeDeceleration * (triggerValue+0.5f)) * Time.deltaTime);
 
         if (speed_speed <= 0f)
@@ -479,15 +502,34 @@ public class HoverboardLocomotion : MonoBehaviour
     }
 
     /// <summary>
-    /// Extracts the roll (Z-axis rotation) from the controller quaternion.
+    /// Extracts the roll (Z-axis rotation) from whichever controller has the highest
+    /// grip value, so carving works from either hand.
     /// </summary>
     private float GetControllerRoll()
     {
-        if (controllerRotationAction == null) return 0f;
+        RefreshControllerDevices();
 
-        Quaternion rotation = controllerRotationAction.action.ReadValue<Quaternion>();
-        // Convert to Euler and return the Z (roll) component
-        return rotation.eulerAngles.z;
+        float bestGrip = -1f;
+        float roll = 0f;
+
+        void Consider(List<InputDevice> devices)
+        {
+            foreach (var device in devices)
+            {
+                if (device.TryGetFeatureValue(CommonUsages.grip, out float grip) &&
+                    grip > gripThreshold && grip > bestGrip &&
+                    device.TryGetFeatureValue(CommonUsages.deviceRotation, out Quaternion rotation))
+                {
+                    bestGrip = grip;
+                    roll = rotation.eulerAngles.z;
+                }
+            }
+        }
+
+        Consider(leftControllers);
+        Consider(rightControllers);
+
+        return roll;
     }
 
     // -------------------------------------------------------------------------
@@ -570,16 +612,5 @@ public class HoverboardLocomotion : MonoBehaviour
         Destroy(board.GetComponent<Collider>());
 
         return board.transform;
-    }
-
-    // -------------------------------------------------------------------------
-    // Cleanup
-    // -------------------------------------------------------------------------
-
-    private void OnDestroy()
-    {
-        triggerAction?.action.Disable();
-        gripAction?.action.Disable();
-        controllerRotationAction?.action.Disable();
     }
 }

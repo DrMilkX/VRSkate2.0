@@ -92,7 +92,8 @@ public class LocomotionSwitcher : MonoBehaviour
     private int activeIndex = -1;
     private bool menuOpen = false;
 
-    // B button polling
+    // B/Y button polling
+    private List<InputDevice> leftControllers = new List<InputDevice>();
     private List<InputDevice> rightControllers = new List<InputDevice>();
     private bool bWasPressed = false;
 
@@ -165,20 +166,30 @@ public class LocomotionSwitcher : MonoBehaviour
     }
 
     // -------------------------------------------------------------------------
-    // B button polling
+    // B/Y button polling
     // -------------------------------------------------------------------------
 
     private void PollBButton()
     {
+        if (leftControllers.Count == 0)
+            InputDevices.GetDevicesWithCharacteristics(
+                InputDeviceCharacteristics.Left | InputDeviceCharacteristics.Controller,
+                leftControllers);
+
         if (rightControllers.Count == 0)
             InputDevices.GetDevicesWithCharacteristics(
                 InputDeviceCharacteristics.Right | InputDeviceCharacteristics.Controller,
                 rightControllers);
 
         bool bPressed = false;
-        foreach (var device in rightControllers)
+        foreach (var device in leftControllers)
             if (device.TryGetFeatureValue(CommonUsages.secondaryButton, out bool val) && val)
             { bPressed = true; break; }
+
+        if (!bPressed)
+            foreach (var device in rightControllers)
+                if (device.TryGetFeatureValue(CommonUsages.secondaryButton, out bool val) && val)
+                { bPressed = true; break; }
 
         if (bPressed && !bWasPressed)
             SetMenuVisible(!menuOpen);
@@ -258,12 +269,12 @@ public class LocomotionSwitcher : MonoBehaviour
         }
 
         activeIndex = index;
+        SyncControllerInputManagers(index);
         RefreshLocomotionHighlights();
         // Debug.Log($"LocomotionSwitcher: '{locomotionOptions[index].displayName}'");
         Debug.Log($"LocomotionSwitcher: '{locomotionOptions[index].displayName}' | Jump Enabled: {!isAutoMoveActive}");
     }
 
-    // AI?
     private void SyncControllerInputManagers(int index)
     {
         if (controllerInputManagers == null) return;
@@ -271,7 +282,7 @@ public class LocomotionSwitcher : MonoBehaviour
         foreach (var m in controllerInputManagers)
             if (m != null) m.smoothMotionEnabled = smooth;
     }
-    // AI?  
+
     private static bool ResolveSmoothMotion(LocomotionOption opt)
     {
         if (IsAutoMoveOption(opt)) return false;
@@ -289,7 +300,7 @@ public class LocomotionSwitcher : MonoBehaviour
             return false;
         return true;
     }
-    // AI?
+
     private static bool IsAutoMoveOption(LocomotionOption opt)
     {
         if (opt == null)

@@ -1206,12 +1206,20 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 7000756237053807613, guid: 43da843e7c8baff4d87eee5d5f64eb4d, type: 3}
+      propertyPath: speed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000756237053807613, guid: 43da843e7c8baff4d87eee5d5f64eb4d, type: 3}
       propertyPath: xrOrigin
       value: 
       objectReference: {fileID: 1035928782}
     - target: {fileID: 7000756237053807613, guid: 43da843e7c8baff4d87eee5d5f64eb4d, type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000756237053807613, guid: 43da843e7c8baff4d87eee5d5f64eb4d, type: 3}
+      propertyPath: rotationSpeed
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 7000756237053807613, guid: 43da843e7c8baff4d87eee5d5f64eb4d, type: 3}
       propertyPath: checkpointSequence
@@ -64742,7 +64750,7 @@ MonoBehaviour:
   - {fileID: 292029552}
   - {fileID: 903292968}
   - {fileID: 1777737597}
-  waypointUIManager: {fileID: 0}
+  waypointUIManager: {fileID: 2025729448}
   activateFirstOnStart: 1
   loopWaypoints: 0
   registerTargetsOnStart: 1

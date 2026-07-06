@@ -79,13 +79,11 @@ public class WaypointCheckpointVisibilityController : MonoBehaviour
 
         currentWaypointIndex = Mathf.Clamp(currentWaypointIndex, 0, waypointTargets.Length - 1);
 
+        DeactivateAllWaypoints();
+
         if (activateFirstOnStart)
         {
             ApplyCurrentWaypointVisibility();
-        }
-        else
-        {
-            DeactivateAllWaypoints();
         }
     }
 
@@ -151,6 +149,7 @@ public class WaypointCheckpointVisibilityController : MonoBehaviour
                     target.DeactivateWaypoint();
                 }
             }
+            Debug.Log($"WaypointCheckpointVisibilityController: Deactivated waypoint {i + 1} - {target?.gameObject.name}.", target);
         }
     }
 

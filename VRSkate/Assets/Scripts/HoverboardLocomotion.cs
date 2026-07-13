@@ -341,9 +341,26 @@ public class HoverboardLocomotion : MonoBehaviour
 
         // Flatten to horizontal plane — we don't want vertical head bob
         // to contribute to the travel direction
-        velocity.y = 0f;
+        // velocity.y = 0f;
 
-        float speed = velocity.magnitude;
+        // use either vertical or horizontal velocity (use the faster of the two and zero the other)
+        if (Mathf.Abs(velocity.y) > Mathf.Abs(velocity.x) && Mathf.Abs(velocity.y) > Mathf.Abs(velocity.z))
+        {
+            velocity.x = 0f;
+            velocity.z = 0f;
+        }
+        else
+        {
+            velocity.y = 0f;
+        }
+
+        float speed = Mathf.Abs(velocity.magnitude);
+
+        // boost speed if moving mostly vertically (crouch activation)
+        // if (velocity.x == 0f || velocity.z == 0f)
+        // {
+        //     speed *= 1.5f; 
+        // }
 
         // Require some minimum forward movement to engage
         // (prevents accidental trigger presses while standing still)
@@ -355,7 +372,11 @@ public class HoverboardLocomotion : MonoBehaviour
 
         // Lock velocity with engage boost
         lockedSpeed = speed * engageSpeedMultiplier;
-        travelDirection = velocity.normalized;
+        // travelDirection = velocity.normalized;
+
+        // use the headset's forward direction projected onto the horizontal plane as the travel direction
+        travelDirection = headset.forward;
+        travelDirection.y = 0f;
 
         // Record head height at engage time for crouch calculation
         boardEngageHeadHeight = headset.position.y;
@@ -413,7 +434,7 @@ public class HoverboardLocomotion : MonoBehaviour
 
         // Decelerate
         float triggerValue = GetCombinedTriggerValue();
-        speed_speed = Mathf.Max(0f, speed_speed - (brakeDeceleration * (triggerValue+0.5f)) * Time.deltaTime);
+        speed_speed = Mathf.Max(0f, speed_speed - (brakeDeceleration * (triggerValue+0.75f)) * Time.deltaTime);
 
         if (speed_speed <= 0f)
         {

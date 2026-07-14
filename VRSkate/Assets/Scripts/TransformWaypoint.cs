@@ -1,8 +1,13 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class TransformWaypoint : MonoBehaviour
-{   
+{
+    // Fired whenever the player arrives at a new current waypoint (index, waypoint transform).
+    // Does not fire for the initial waypoint set in Start().
+    public event Action<int, Transform> OnWaypointReached;
+
     [SerializeField] public Transform[] waypoints;
     public Transform currentWaypoint;
     public int currentWaypointIndex = 0;
@@ -90,8 +95,9 @@ public class TransformWaypoint : MonoBehaviour
             currentWaypoint = waypoints[currentWaypointIndex];
             HideAllWaypoints();
             ShowCurrentWaypoint();
-            
+
             Debug.Log($"TransformWaypoint: Moved to waypoint {currentWaypointIndex + 1} - {currentWaypoint.name}");
+            OnWaypointReached?.Invoke(currentWaypointIndex, currentWaypoint);
         }
         else if (loopWaypoints)
         {
@@ -101,6 +107,7 @@ public class TransformWaypoint : MonoBehaviour
             HideAllWaypoints();
             ShowCurrentWaypoint();
             Debug.Log($"TransformWaypoint: Looping back to waypoint {currentWaypointIndex + 1} - {currentWaypoint.name}");
+            OnWaypointReached?.Invoke(currentWaypointIndex, currentWaypoint);
 
         }else
         {

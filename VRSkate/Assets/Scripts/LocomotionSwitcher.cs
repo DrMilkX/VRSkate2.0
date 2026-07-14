@@ -92,6 +92,12 @@ public class LocomotionSwitcher : MonoBehaviour
     private int activeIndex = -1;
     private bool menuOpen = false;
 
+    // Name of the currently active locomotion mode, for external systems (e.g. experiment logging).
+    public string CurrentLocomotionName =>
+        (activeIndex >= 0 && activeIndex < locomotionOptions.Count)
+            ? locomotionOptions[activeIndex].displayName
+            : "None";
+
     // B/Y button polling
     private List<InputDevice> leftControllers = new List<InputDevice>();
     private List<InputDevice> rightControllers = new List<InputDevice>();

@@ -179,6 +179,9 @@ public class TutorialManager : MonoBehaviour
         if (visible)
         {
             PositionPopupInFrontOfPlayer(popupRoots[currentStageIndex]);
+
+            // reset the video to the beginning and play it
+            videoPlayers[currentStageIndex]?.Prepare();     
             videoPlayers[currentStageIndex]?.Play();
         }
         else
@@ -361,6 +364,10 @@ public class TutorialManager : MonoBehaviour
         ContentSizeFitter mediaFitter = mediaRow.AddComponent<ContentSizeFitter>();
         mediaFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
         mediaFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+        // Row 3: instructions to pop up the menu again, sized to wrap at roughly the width of the media row above
+        GameObject footerPanel = BuildBorderedPanel(root.transform, "FooterPanel");
+        CreateLabel(footerPanel.transform, "Press B/Y to toggle this menu", 18, false, textWidth);
 
         GameObject videoPanel = BuildBorderedPanel(mediaRow.transform, "VideoPanel");
         videoPlayer = BuildVideoSurface(videoPanel.transform, stage.demoClip, videoWidth, MediaHeight, out renderTexture);

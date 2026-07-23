@@ -126,7 +126,7 @@ GameObject:
   - component: {fileID: 4752888273645791970}
   - component: {fileID: 1233858265752385924}
   m_Layer: 7
-  m_Name: Light
+  m_Name: WaypointExp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

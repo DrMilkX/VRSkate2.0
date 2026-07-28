@@ -8539,7 +8539,7 @@ MonoBehaviour:
   controllerInputManagers: []
   locomotionChecks: []
   isExperimentRunning: 0
-  useAutoMoveFirst: 1
+  useAutoMoveFirst: 0
 --- !u!4 &930037949
 Transform:
   m_ObjectHideFlags: 0
@@ -18373,9 +18373,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1560759524927044245, guid: 6106ff8dc9b84cd498c893f7a43b1bf1, type: 3}
+      propertyPath: maxSpeed
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 3146966227899594810, guid: 6106ff8dc9b84cd498c893f7a43b1bf1, type: 3}
       propertyPath: m_Name
       value: PlayerTutorial
+      objectReference: {fileID: 0}
+    - target: {fileID: 4967239197816418880, guid: 6106ff8dc9b84cd498c893f7a43b1bf1, type: 3}
+      propertyPath: m_MoveSpeed
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6714518291694666722, guid: 6106ff8dc9b84cd498c893f7a43b1bf1, type: 3}
       propertyPath: m_IsActive

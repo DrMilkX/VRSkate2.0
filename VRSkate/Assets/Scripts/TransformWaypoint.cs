@@ -179,6 +179,13 @@ public class TransformWaypoint : MonoBehaviour
         }
     }
 
+    public Vector3 GetCurrentWaypointPosition()
+    {
+        if (currentWaypoint != null)
+            return waypoints[currentWaypointIndex].position;
+        else
+            return Vector3.zero;
+    }
 
 
 }

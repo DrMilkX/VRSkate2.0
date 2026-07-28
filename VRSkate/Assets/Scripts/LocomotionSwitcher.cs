@@ -243,6 +243,10 @@ public class LocomotionSwitcher : MonoBehaviour
 
     private void ShowPanel(GameObject panel)
     {
+        // If the menu hasn't been built yet, build it now
+        if(mainPanel == null)
+            BuildMenu();
+
         mainPanel.SetActive(panel == mainPanel);
         settingsPanel.SetActive(panel == settingsPanel);
         scenePanel.SetActive(panel == scenePanel);

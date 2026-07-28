@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.XR;
@@ -7,8 +8,12 @@ using TMPro;
 
 
 public class ExperimentManager : MonoBehaviour
-{
-   
+{   
+    [Header("Debug")]
+    public GameObject player;
+    public TransformWaypoint waypointManager;
+
+
     public Transform headset;
     public Behaviour locoswitcher;
 
@@ -95,6 +100,19 @@ public class ExperimentManager : MonoBehaviour
 
     }
 
+
+    void Update()
+    {
+        if(Keyboard.current != null){
+            // Stop the experiment if the Escape key is pressed
+            if(Keyboard.current.escapeKey.wasPressedThisFrame == true)
+                StopExperiment();
+
+            // move the player to the current waypoint position, but slightly behind it
+            if(Keyboard.current.wKey.wasPressedThisFrame == true)
+                player.transform.position = waypointManager.GetCurrentWaypointPosition() + new Vector3(0, 0, 2f); 
+        }
+    }
     
     private void PositionPopupInFrontOfPlayer(GameObject popup)
     {

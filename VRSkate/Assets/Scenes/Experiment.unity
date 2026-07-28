@@ -16856,7 +16856,7 @@ MonoBehaviour:
   waypoints: []
   currentWaypoint: {fileID: 0}
   currentWaypointIndex: 0
-  loopWaypoints: 1
+  loopWaypoints: 0
   playerTransform: {fileID: 504283504}
   arrowSprite: {fileID: 1526304812}
   groundLayerMask:
@@ -25460,7 +25460,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6646810102170514071, guid: 63923e886d16bf34ab42cdab16c68e42, type: 3}
   m_PrefabInstance: {fileID: 6587935839412536402}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 935467046}
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 01f69dc1cb084aa42b2f2f8cd87bc770, type: 3}
@@ -25471,7 +25471,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4106168933942269347, guid: 63923e886d16bf34ab42cdab16c68e42, type: 3}
   m_PrefabInstance: {fileID: 6587935839412536402}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 935467046}
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f6316aaf34976ff47a952aa3a41e976b, type: 3}
@@ -25493,7 +25493,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3236569787911194999, guid: 63923e886d16bf34ab42cdab16c68e42, type: 3}
   m_PrefabInstance: {fileID: 6587935839412536402}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 935467046}
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce2f5ffe0ffc48446bf82a65df940913, type: 3}
@@ -43296,6 +43296,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a21b85f8e688fb9489f65b8ceb6779a6, type: 3}
   m_PrefabInstance: {fileID: 935149132}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &935467046 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1364081107783060440, guid: 63923e886d16bf34ab42cdab16c68e42, type: 3}
+  m_PrefabInstance: {fileID: 6587935839412536402}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &939177595
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -51745,6 +51750,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e00168e71a04e1f42b3f4860c562267a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExperimentManager
+  player: {fileID: 935467046}
+  waypointManager: {fileID: 366641777}
   headset: {fileID: 504283504}
   locoswitcher: {fileID: 1861784367}
   helpPopup: {fileID: 958743165}
@@ -79204,7 +79211,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 753906940535007786, guid: 63923e886d16bf34ab42cdab16c68e42, type: 3}
   m_PrefabInstance: {fileID: 6587935839412536402}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 935467046}
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 943b403ecf5e0ec4caa8a10a0464a8c4, type: 3}
@@ -79215,8 +79222,8 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 346673124233438963, guid: 63923e886d16bf34ab42cdab16c68e42, type: 3}
   m_PrefabInstance: {fileID: 6587935839412536402}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_GameObject: {fileID: 935467046}
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6e78f433fa3cfa844b8c8b7f44de1507, type: 3}
   m_Name: 
@@ -95013,6 +95020,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 346673124233438963, guid: 63923e886d16bf34ab42cdab16c68e42, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 753906940535007786, guid: 63923e886d16bf34ab42cdab16c68e42, type: 3}
       propertyPath: 'waypoints.Array.data[0]'
       value: 

@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
@@ -26,6 +27,7 @@ public class ExperimentManager : MonoBehaviour
 
     public Dictionary<string, string> locoHelper = new Dictionary<string, string>()
     {
+        { "automove", "You will be moved to the waypoint automatically in 5 seconds." },
         { "teleport", "Tilt the joystick up, aim, release" },
         { "joystick", "Tilt the left joystick in the direction to move" },
         { "walking", "Alternate moving the left and right controllers up and down in front of you" },
@@ -53,6 +55,7 @@ public class ExperimentManager : MonoBehaviour
     private int currentLocomotionIndex = 0;
 
     public bool isExperimentRunning = false;
+    public bool useAutoMoveFirst = true;
 
 
     void Start()
@@ -73,10 +76,21 @@ public class ExperimentManager : MonoBehaviour
             }
         }
 
-        // select a random locomotion for the first stage of the experiment
+        // use the automover first or random locomotion
         if(isExperimentRunning)
         {
-            RandomPickLocomotion();
+            if (useAutoMoveFirst)
+            {
+                ApplyLocomotionLock(locomotionChecks[0]);
+                ShowHelperTextForCurrentLocomotion();
+                locomotionChecks[0].used = true;
+                StartCoroutine(ActivateAutoMove());
+            }
+            else
+            {
+                RandomPickLocomotion();
+            }
+            // RandomPickLocomotion();
         }
 
     }
@@ -186,9 +200,67 @@ public class ExperimentManager : MonoBehaviour
         }
     }
 
+    public void ShowFreePlayHelperText()
+    {
+        PositionPopupInFrontOfPlayer(helpPopup.gameObject);
+        string helperText = "You are now in free play mode.\n\nPress B to switch locomotion modes in the menu and select with trigger.";
+        helpPopup.gameObject.SetActive(true);
+        helperTextInstr.GetComponent<TMPro.TextMeshProUGUI>().text = helperText;
+        helperTextTitle.GetComponent<TMPro.TextMeshProUGUI>().text = $"[ FREE PLAY ] MODE ACTIVE";
+        Debug.Log($"ExperimentManager: Free play helper text: {helperText}");
+    }
+
+    public void ShowExperimentEndHelperText()
+    {
+        PositionPopupInFrontOfPlayer(helpPopup.gameObject);
+        string helperText = "The experiment is now complete!\n\nYou may remove the headset.";
+        helpPopup.gameObject.SetActive(true);
+        helperTextInstr.GetComponent<TMPro.TextMeshProUGUI>().text = helperText;
+        helperTextTitle.GetComponent<TMPro.TextMeshProUGUI>().text = $"[ EXPERIMENT COMPLETE ]";
+        Debug.Log($"ExperimentManager: Experiment end helper text: {helperText}");
+    }
+
     public void AllowLocoSwitcher()
     {
         locoswitcher.enabled = true;
+        ShowFreePlayHelperText();
     }
 
+    IEnumerator ActivateAutoMove()
+    {
+        // wait for 2 seconds before allowing the next locomotion stage
+        yield return new WaitForSeconds(5f);
+        if (locomotionChecks.Count > 0 && locomotionChecks[0].locomotionName == "automove" && locomotionChecks[0].locomotionBehaviour != null)
+        {
+            locomotionChecks[0].locomotionBehaviour.GetComponent<AutoMoveWaypoint>().moveForward = true;
+        }
+    }
+
+    public string GetCurrentLocomotionName()
+    {
+        LocCheck currentLocomotion = locomotionChecks.Find(lc => lc.locomotionBehaviour.enabled);
+        if (currentLocomotion != null)
+        {
+            return currentLocomotion.locomotionName;
+        }
+        else
+        {
+            return "Unknown";
+        }
+    }
+
+    public void StopExperiment()
+    {
+        // disable all locomotion behaviours
+        foreach (var behaviour in allLocomotionBehaviours)
+            if (behaviour != null) behaviour.enabled = false;
+
+        // disable the loco switcher
+        if (locoswitcher != null) locoswitcher.enabled = false;
+
+        // hide the helper popup
+        ShowExperimentEndHelperText();
+
+        Debug.Log("ExperimentManager: Experiment stopped. All locomotion disabled.");
+    }
 }

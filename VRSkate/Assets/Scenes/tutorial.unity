@@ -8529,6 +8529,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e00168e71a04e1f42b3f4860c562267a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExperimentManager
+  headset: {fileID: 0}
+  locoswitcher: {fileID: 0}
+  helpPopup: {fileID: 0}
+  helperTextTitle: {fileID: 0}
+  helperTextInstr: {fileID: 0}
+  popupDistance: 1.2
+  popupHeightOffset: 0.1
+  controllerInputManagers: []
+  locomotionChecks: []
+  isExperimentRunning: 0
+  useAutoMoveFirst: 1
 --- !u!4 &930037949
 Transform:
   m_ObjectHideFlags: 0
@@ -18365,6 +18376,10 @@ PrefabInstance:
     - target: {fileID: 3146966227899594810, guid: 6106ff8dc9b84cd498c893f7a43b1bf1, type: 3}
       propertyPath: m_Name
       value: PlayerTutorial
+      objectReference: {fileID: 0}
+    - target: {fileID: 6714518291694666722, guid: 6106ff8dc9b84cd498c893f7a43b1bf1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9141849965832218940, guid: 6106ff8dc9b84cd498c893f7a43b1bf1, type: 3}
       propertyPath: m_LocalPosition.x

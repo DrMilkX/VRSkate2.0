@@ -3,6 +3,7 @@ using UnityEngine;
 public class GetPizza : MonoBehaviour
 {
     GameObject pizza;
+    Vector3 pizzaEnd;
     ParticleSystem confetti;
 
     Transform playerTransform;
@@ -11,7 +12,9 @@ public class GetPizza : MonoBehaviour
     {
         pizza = transform.Find("Pizza").gameObject;
         confetti = transform.Find("confetti").GetComponent<ParticleSystem>();
-        playerTransform = GameObject.FindWithTag("Player").transform;
+        playerTransform = GameObject.FindWithTag("MainCamera").transform;
+
+        pizzaEnd = pizza.transform.position;
 
         // hide the pizza at the start
         pizza.SetActive(false);
@@ -20,7 +23,7 @@ public class GetPizza : MonoBehaviour
 
     public void GivePizza()
     {
-        pizza.transform.position = playerTransform.position + Vector3.up; // place the pizza slightly above the player's position
+        pizza.transform.position = playerTransform.position + Vector3.down*0.5f; // place the pizza slightly below the player's eyeline
         pizza.transform.SetParent(transform);
         pizza.SetActive(true);
 
@@ -52,7 +55,7 @@ public class GetPizza : MonoBehaviour
     private System.Collections.IEnumerator MovePizza()
     {
         Vector3 startPos = pizza.transform.position;
-        Vector3 endPos = transform.position;
+        Vector3 endPos = pizzaEnd;
         float duration = 2f;
         float elapsed = 0f;
 

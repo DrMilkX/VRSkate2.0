@@ -76,6 +76,8 @@ public class LocomotionSwitcher : MonoBehaviour
     [Tooltip("Ray interactor line GameObjects — shown only while menu is open")]
     public GameObject[] menuRayObjects;
 
+    public bool experimentMode = false;
+
     // -------------------------------------------------------------------------
     // Inspector — Scene Switcher
     // -------------------------------------------------------------------------
@@ -350,8 +352,16 @@ public class LocomotionSwitcher : MonoBehaviour
         rt.localScale = Vector3.one * 0.001f;
 
         mainPanel = BuildMainPanel(menuRoot.transform);
-        settingsPanel = BuildSettingsPanel(menuRoot.transform);
-        scenePanel = BuildScenePanel(menuRoot.transform);
+        if(!experimentMode)
+        {
+            settingsPanel = BuildSettingsPanel(menuRoot.transform);
+            scenePanel = BuildScenePanel(menuRoot.transform);
+        }
+        else
+        {
+            settingsPanel = null;
+            scenePanel = null;
+        }
     }
 
     // ── Main panel ────────────────────────────────────────────────────────────
@@ -379,8 +389,11 @@ public class LocomotionSwitcher : MonoBehaviour
         CreateDivider(panel.transform);
 
         // Submenus
-        CreateButton(panel.transform, "Board Settings  >", () => ShowPanel(settingsPanel));
-        CreateButton(panel.transform, "Switch Scene  >", () => ShowPanel(scenePanel));
+        if(!experimentMode)
+        {
+            CreateButton(panel.transform, "Board Settings  >", () => ShowPanel(settingsPanel));
+            CreateButton(panel.transform, "Switch Scene  >", () => ShowPanel(scenePanel));
+        }
 
         CreateDivider(panel.transform);
         CreateButton(panel.transform, "[ Close ]", () => SetMenuVisible(false));

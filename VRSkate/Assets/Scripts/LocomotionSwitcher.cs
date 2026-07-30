@@ -52,8 +52,8 @@ public class LocomotionSwitcher : MonoBehaviour
     [Tooltip("HoverboardLocomotion script — for the settings submenu")]
     public HoverboardLocomotion hoverboard;
 
-    [Tooltip("AutoLocomotion script — for the rail-style waypoint mode")]
-    public AutoLocomotion autoMove;
+    [Tooltip("AutoMoveWaypoint script — for the rail-style waypoint mode")]
+    public AutoMoveWaypoint autoMove;
 
     [Header("Abilities")]
     [Tooltip("Jump Provider script — to be disabled in automove")]
@@ -135,7 +135,7 @@ public class LocomotionSwitcher : MonoBehaviour
             hoverboard = GetComponent<HoverboardLocomotion>();
 
         if (autoMove == null)
-            autoMove = GetComponent<AutoLocomotion>();
+            autoMove = GetComponent<AutoMoveWaypoint>();
 
         if (controllerInputManagers == null || controllerInputManagers.Length == 0)
             controllerInputManagers = GetComponentsInChildren<ControllerInputActionManager>(true);
@@ -319,7 +319,7 @@ public class LocomotionSwitcher : MonoBehaviour
         if (opt == null)
             return false;
 
-        if (opt.locomotionComponent is AutoLocomotion)
+        if (opt.locomotionComponent is AutoMoveWaypoint)
             return true;
 
         if (!string.IsNullOrWhiteSpace(opt.displayName))

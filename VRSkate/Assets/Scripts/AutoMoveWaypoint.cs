@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.XR.CoreUtils;
 
-public class AutoLocomotion : MonoBehaviour
+public class AutoMoveWaypoint : MonoBehaviour
 {
     [Header("Route")]
     [Tooltip("Assign the shared checkpoint sequence holder here instead of populating a local array.")]

@@ -16,7 +16,8 @@ public class AutoLocomotion : MonoBehaviour
     public GameObject[] npcCharacters;
 
     public float speed = 10.0f;
-    public float rotationSpeed = 10.0f;
+    [Tooltip("How fast the rig smoothly aligns to the new waypoint before moving (degrees per second).")]
+    public float waypointRotationSpeed = 100.0f;
     [Tooltip("How quickly the player turns to face the current NPC, in degrees per second.")]
     public float npcLookRotationSpeed = 180.0f;
     public float arrivalDistance = 0.15f;
@@ -33,6 +34,7 @@ public class AutoLocomotion : MonoBehaviour
     private bool waitingForTrigger = false;
     private bool advanceWasPressed = false;
     private Coroutine npcLookRoutine;
+    private Coroutine waypointTurnRoutine;
 
     void Start()
     {
@@ -78,6 +80,8 @@ public class AutoLocomotion : MonoBehaviour
 
         if (advanceAction != null)
             advanceAction.action.Enable();
+            
+        AlignToCurrentWaypoint();
     }
 
     void Update()
@@ -92,11 +96,10 @@ public class AutoLocomotion : MonoBehaviour
             return;
         }
 
-        // REMOVED: The synchronization block that was forcibly unpausing the script
-
         HandleAdvanceInput();
 
-        if (waitingForTrigger)
+        // Halt movement if waiting for input OR if the initial snappy turn is still running
+        if (waitingForTrigger || waypointTurnRoutine != null)
             return;
 
         Transform target = checkpointSequence.GetCheckpoint(currentWP);
@@ -119,22 +122,9 @@ public class AutoLocomotion : MonoBehaviour
         {
             xrOrigin.transform.position = targetPosition;
             waitingForTrigger = true;
+            
             StartNpcLookRoutine();
             return;
-        }
-
-        Vector3 lookDirection = target.position - xrOrigin.Camera.transform.position;
-        lookDirection.y = 0; 
-        
-        if (lookDirection.sqrMagnitude > 0.001f)
-        {
-            float targetYaw = Quaternion.LookRotation(lookDirection).eulerAngles.y;
-            float currentYaw = xrOrigin.Camera.transform.eulerAngles.y;
-            
-            float lerpedYaw = Mathf.LerpAngle(currentYaw, targetYaw, rotationSpeed * Time.deltaTime);
-            float angleDelta = Mathf.DeltaAngle(currentYaw, lerpedYaw);
-            
-            xrOrigin.RotateAroundCameraUsingOriginUp(angleDelta);
         }
 
         xrOrigin.transform.position = Vector3.MoveTowards(xrOrigin.transform.position, targetPosition, speed * Time.deltaTime);
@@ -167,27 +157,26 @@ public class AutoLocomotion : MonoBehaviour
             {
                 currentWP = Mathf.Clamp(waypointVisibilityController.CurrentWaypointIndex, 0, checkpointSequence.Count - 1);
             }
-            waitingForTrigger = false;
-            return;
-        }
-
-        int targetCount = checkpointSequence != null ? checkpointSequence.Count : 0;
-
-        if (currentWP + 1 >= targetCount)
-        {
-            if (!loopWaypoints)
-            {
-                Debug.Log("AutoLocomotion: Reached the last checkpoint.");
-                waitingForTrigger = true;
-                return; 
-            }
-            currentWP = 0;
-            Debug.Log("AutoLocomotion: Looping back to the first checkpoint.");
         }
         else
         {
-            currentWP++;
-            Debug.Log($"AutoLocomotion: Advanced to checkpoint {currentWP + 1} - {checkpointSequence.GetCheckpointName(currentWP)}");
+            int targetCount = checkpointSequence != null ? checkpointSequence.Count : 0;
+            if (currentWP + 1 >= targetCount)
+            {
+                if (!loopWaypoints)
+                {
+                    Debug.Log("AutoLocomotion: Reached the last checkpoint.");
+                    waitingForTrigger = true;
+                    return; 
+                }
+                currentWP = 0;
+                Debug.Log("AutoLocomotion: Looping back to the first checkpoint.");
+            }
+            else
+            {
+                currentWP++;
+                Debug.Log($"AutoLocomotion: Advanced to checkpoint {currentWP + 1} - {checkpointSequence.GetCheckpointName(currentWP)}");
+            }
         }
 
         if (waypointVisibilityController != null)
@@ -196,6 +185,55 @@ public class AutoLocomotion : MonoBehaviour
         }
 
         waitingForTrigger = false;
+        AlignToCurrentWaypoint();
+    }
+    
+    private void AlignToCurrentWaypoint()
+    {
+        if (waypointTurnRoutine != null)
+        {
+            StopCoroutine(waypointTurnRoutine);
+        }
+        
+        waypointTurnRoutine = StartCoroutine(SmoothAlignToWaypoint());
+    }
+
+    private IEnumerator SmoothAlignToWaypoint()
+    {
+        Transform target = checkpointSequence.GetCheckpoint(currentWP);
+        if (target == null)
+        {
+            waypointTurnRoutine = null;
+            yield break;
+        }
+
+        while (true)
+        {
+            Vector3 targetDirection = target.position - xrOrigin.Camera.transform.position;
+            targetDirection.y = 0f;
+
+            if (targetDirection.sqrMagnitude < 0.0001f) break;
+
+            float targetYaw = Quaternion.LookRotation(targetDirection, Vector3.up).eulerAngles.y;
+            float currentYaw = xrOrigin.Camera.transform.eulerAngles.y;
+
+            float nextYaw = Mathf.MoveTowardsAngle(currentYaw, targetYaw, waypointRotationSpeed * Time.deltaTime);
+            float angleDelta = Mathf.DeltaAngle(currentYaw, nextYaw);
+
+            if (Mathf.Abs(angleDelta) > 0.0001f)
+            {
+                xrOrigin.RotateAroundCameraUsingOriginUp(angleDelta);
+            }
+
+            if (Mathf.Abs(Mathf.DeltaAngle(xrOrigin.Camera.transform.eulerAngles.y, targetYaw)) <= 0.5f)
+            {
+                break;
+            }
+
+            yield return null;
+        }
+
+        waypointTurnRoutine = null;
     }
 
     private void StartNpcLookRoutine()
@@ -237,6 +275,11 @@ public class AutoLocomotion : MonoBehaviour
             float targetYaw = Quaternion.LookRotation(targetDirection, Vector3.up).eulerAngles.y;
             float currentYaw = xrOrigin.Camera.transform.eulerAngles.y;
 
+            if (Mathf.Abs(Mathf.DeltaAngle(currentYaw, targetYaw)) < 0.5f)
+            {
+                break;
+            }
+
             float nextYaw = Mathf.MoveTowardsAngle(currentYaw, targetYaw, npcLookRotationSpeed * Time.deltaTime);
             float angleDelta = Mathf.DeltaAngle(currentYaw, nextYaw);
 
@@ -253,7 +296,6 @@ public class AutoLocomotion : MonoBehaviour
             yield return null;
         }
 
-        // The turn is complete. We strictly wait for user input.
         waitingForTrigger = true;
         npcLookRoutine = null;
     }
@@ -275,6 +317,12 @@ public class AutoLocomotion : MonoBehaviour
         {
             StopCoroutine(npcLookRoutine);
             npcLookRoutine = null;
+        }
+
+        if (waypointTurnRoutine != null)
+        {
+            StopCoroutine(waypointTurnRoutine);
+            waypointTurnRoutine = null;
         }
 
         if (advanceAction != null)

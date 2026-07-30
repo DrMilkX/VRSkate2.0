@@ -254,13 +254,14 @@ public class LocomotionSwitcher : MonoBehaviour
     {
         if (index < 0 || index >= locomotionOptions.Count) return;
 
-        // Check if the newly selected mode is AutoMove
+        // Check if the newly selected mode is AutoMove or Hoverboard, and disable jump if so. Otherwise, enable jump.
         bool isAutoMoveActive = IsAutoMoveOption(locomotionOptions[index]);
+        bool isHoverboardActive = locomotionOptions[index].locomotionComponent is HoverboardLocomotionAlt;
 
         // Disable jump provider if AutoMove is active, otherwise enable it
         if (jumpProvider != null)
         {
-            jumpProvider.enabled = !isAutoMoveActive;
+            jumpProvider.enabled = !isAutoMoveActive && !isHoverboardActive;
         }
 
         for (int i = 0; i < locomotionOptions.Count; i++)

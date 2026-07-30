@@ -264,6 +264,8 @@ public class HoverboardLocomotion : MonoBehaviour
     {
         float triggerValue = GetCombinedTriggerValue();
 
+// change t//o //TODO 
+// GetCombinedTriggerValue
         bool triggerPressed = triggerValue > 0.5f;
 
         // Rising edge only — we want a single press event, not continuous hold
@@ -279,6 +281,7 @@ public class HoverboardLocomotion : MonoBehaviour
         triggerWasPressed = triggerPressed;
     }
 
+// TODO: add grip + trigger held = start, slowly release them to start braking, pressing A to start rotating/turning.
     private void OnTriggerPressed()
     {
         switch (state)
@@ -290,12 +293,11 @@ public class HoverboardLocomotion : MonoBehaviour
             case BoardState.Cruising:
                 BeginBraking();
                 break;
-
-            // case BoardState.Braking:
-            //     // Pressing trigger while already braking cancels the brake
-            //     // and re-locks the current (reduced) speed
-            //     state = BoardState.Cruising;
-            //     break;
+            case BoardState.Braking:
+                // Pressing trigger while already braking cancels the brake
+                // and re-locks the current (reduced) speed
+                state = BoardState.Cruising;
+                break;
         }
     }
 

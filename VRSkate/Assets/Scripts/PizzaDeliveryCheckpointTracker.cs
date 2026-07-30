@@ -102,12 +102,7 @@ public class PizzaDeliveryCheckpointTracker : MonoBehaviour
 
         Debug.Log($"PizzaDeliveryCheckpointTracker: Arrived at {checkpointSequence.GetCheckpointName(nextCheckpointIndex)} checkpoint.", this);
         RevealPizza(nextCheckpointIndex);
-
-        if (waypointVisibilityController != null)
-        {
-            waypointVisibilityController.AdvanceWaypoint();
-        }
-
+    
         nextCheckpointIndex++;
         if (nextCheckpointIndex >= checkpointSequence.Count)
         {

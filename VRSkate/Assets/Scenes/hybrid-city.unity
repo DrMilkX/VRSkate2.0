@@ -1219,7 +1219,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7000756237053807613, guid: 43da843e7c8baff4d87eee5d5f64eb4d, type: 3}
       propertyPath: rotationSpeed
-      value: 7
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 7000756237053807613, guid: 43da843e7c8baff4d87eee5d5f64eb4d, type: 3}
       propertyPath: checkpointSequence
@@ -1289,6 +1289,10 @@ PrefabInstance:
       propertyPath: hoverboard
       value: 
       objectReference: {fileID: 1035928779}
+    - target: {fileID: 8558728781296801136, guid: 43da843e7c8baff4d87eee5d5f64eb4d, type: 3}
+      propertyPath: locomotionOptions.Array.data[0].locomotionComponent
+      value: 
+      objectReference: {fileID: 1035928791}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -1296,6 +1300,9 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1612248416}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6982593383981873243, guid: 43da843e7c8baff4d87eee5d5f64eb4d, type: 3}
+      insertIndex: 7
+      addedObject: {fileID: 1035928791}
     - targetCorrespondingSourceObject: {fileID: 6982593383981873243, guid: 43da843e7c8baff4d87eee5d5f64eb4d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1035928790}
@@ -12899,7 +12906,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 288b117258616aa4f928ba6f91dc47c3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -83.65
+      value: -90.9
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 288b117258616aa4f928ba6f91dc47c3, type: 3}
       propertyPath: m_LocalPosition.y
@@ -21151,7 +21158,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1363330008124402096, guid: 066db0c87d269cf4ebe59746e8764e14, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -88.64781
+      value: -94.42
       objectReference: {fileID: 0}
     - target: {fileID: 1363330008124402096, guid: 066db0c87d269cf4ebe59746e8764e14, type: 3}
       propertyPath: m_LocalPosition.y
@@ -31113,6 +31120,36 @@ MonoBehaviour:
   - {fileID: 120877873}
   pizzaSpawnHeight: 1.5
   pizzaFloatDownDuration: 0.75
+--- !u!114 &1035928791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 356806629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 024de8bc7ecbd024fa2c38d8eef29365, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HoverboardLocomotionAlt
+  cameraOffset: {fileID: 0}
+  headset: {fileID: 1800956203}
+  hoverboardModel: {fileID: 6397913729488411876, guid: ec88222b6735b5345a6ba47a90ffdbb6, type: 3}
+  velocitySampleDuration: 0.15
+  brakeDeceleration: 0.75
+  crouchSpeedMultiplier: 5
+  engageSpeedMultiplier: 2
+  carveSensitivity: 0.25
+  carveDamping: 4
+  boardHoverHeight: -0.4
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  wallDetectionDistance: 0.6
+  wallMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  wallNormalThreshold: 0.5
 --- !u!1001 &1040382370
 PrefabInstance:
   m_ObjectHideFlags: 0

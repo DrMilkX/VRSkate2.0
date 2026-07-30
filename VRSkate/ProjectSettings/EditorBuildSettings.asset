@@ -11,7 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/city.unity
     guid: f9b943336728d6f4f8594b4ab2faa03e
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/hybrid-city.unity
     guid: 8e5113886a363b9418817f148a999ccb
   - enabled: 1
@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/suburbs.unity
     guid: c7e120c5101a23c4a93f46eb9fdc05e1
+  - enabled: 1
+    path: Assets/Scenes/Experiment.unity
+    guid: 94c3f18477bb7b648b2cbf0cfac645da
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

@@ -20,6 +20,7 @@ public class ExperimentLogger : MonoBehaviour
     [Header("References")]
     [SerializeField] private TransformWaypoint waypointSystem;
     [SerializeField] private LocomotionSwitcher locomotionSwitcher;
+    [SerializeField] private ExperimentManager experimentManager;
     [SerializeField] private Transform playerTransform;
 
     [Header("Session")]
@@ -107,6 +108,10 @@ public class ExperimentLogger : MonoBehaviour
             : 0f;
         float pathEfficiency = traveledDistance > 0.0001f ? straightLineDistance / traveledDistance : 0f;
         string locomotionMode = locomotionSwitcher != null ? locomotionSwitcher.CurrentLocomotionName : "Unknown";
+
+        // override with experiment mode
+        if (experimentManager != null && experimentManager.isExperimentRunning)
+            locomotionMode = experimentManager.GetCurrentLocomotionName();
 
         WriteRow(waypointIndex, waypoint.name, segmentTime, segmentStartTimestamp, segmentEndTimestamp,
             locomotionMode, straightLineDistance, traveledDistance, pathEfficiency,

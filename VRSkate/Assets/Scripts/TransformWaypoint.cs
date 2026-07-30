@@ -117,6 +117,27 @@ public class TransformWaypoint : MonoBehaviour
 
     }
 
+    public void ShowParticularWaypoint(int index)
+    {
+        if ((index >= 0 && index < waypoints.Length) || (index == -1 && waypoints.Length > 0)) // allow -1 to show the last waypoint
+        {
+            if (index == -1)
+            {
+                index = waypoints.Length - 1; // set to last waypoint
+            }
+            currentWaypointIndex = index;
+            currentWaypoint = waypoints[currentWaypointIndex];
+            HideAllWaypoints();
+            ShowCurrentWaypoint();
+            Debug.Log($"TransformWaypoint: Moved to waypoint {currentWaypointIndex + 1} - {currentWaypoint.name}");
+            OnWaypointReached?.Invoke(currentWaypointIndex, currentWaypoint);
+        }
+        else
+        {
+            Debug.LogWarning($"TransformWaypoint: Invalid waypoint index {index}. Must be between 0 and {waypoints.Length - 1}.", this);
+        }
+    }
+
 
     void ShowArrowToCurrentWaypoint()
     {
@@ -156,6 +177,14 @@ public class TransformWaypoint : MonoBehaviour
         {
             Debug.LogWarning("TransformWaypoint: Arrow sprite or player transform is not assigned.", this);
         }
+    }
+
+    public Vector3 GetCurrentWaypointPosition()
+    {
+        if (currentWaypoint != null)
+            return waypoints[currentWaypointIndex].position;
+        else
+            return Vector3.zero;
     }
 
 

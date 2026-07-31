@@ -211,6 +211,9 @@ public class LocomotionSwitcher : MonoBehaviour
 
     private void SetMenuVisible(bool visible)
     {
+        if(mainPanel == null)
+            BuildMenu();
+
         menuOpen = visible;
         menuRoot.SetActive(visible);
 

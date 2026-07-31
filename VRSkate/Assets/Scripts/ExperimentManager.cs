@@ -6,16 +6,14 @@ using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
 using TMPro;
 
+
 public class ExperimentManager : MonoBehaviour
-{
-    [Header("Debug")]
+{   
     public GameObject player;
+    public TransformWaypoint waypointManager;
 
-    [Tooltip("The controller managing marker visibility.")]
-    public WaypointCheckpointVisibilityController waypointManager;
+    public Transform spawnPoint;
 
-    [Tooltip("The sequence holding the physical waypoint transforms.")]
-    public WaypointCheckpointSequence checkpointSequence;
 
     public Transform headset;
     public Behaviour locoswitcher;
@@ -27,14 +25,15 @@ public class ExperimentManager : MonoBehaviour
     public float popupHeightOffset = 0.1f;
 
     private List<Behaviour> allLocomotionBehaviours = new List<Behaviour>();
-
+     
     [Header("Controller Input Managers")]
     [Tooltip("Used to toggle smooth motion for the joystick stage. Auto-found on Start if left empty.")]
     public ControllerInputActionManager[] controllerInputManagers;
 
+
     public Dictionary<string, string> locoHelper = new Dictionary<string, string>()
     {
-        { "automove", "You will be moved to the waypoint automatically in 5 seconds." },
+        { "automove", "Press the A button to move automatically to the waypoint." },
         { "teleport", "Tilt the joystick up, aim, release" },
         { "joystick", "Tilt the left joystick in the direction to move" },
         { "walking", "Alternate moving the left and right controllers up and down in front of you" },
@@ -58,17 +57,19 @@ public class ExperimentManager : MonoBehaviour
             this.used = used;
         }
     }
-
     public List<LocCheck> locomotionChecks = new List<LocCheck>();
     private int currentLocomotionIndex = 0;
 
     public bool isExperimentRunning = false;
     public bool useAutoMoveFirst = true;
 
+
     void Start()
     {
+
         if (controllerInputManagers == null || controllerInputManagers.Length == 0)
-            controllerInputManagers = FindObjectsByType<ControllerInputActionManager>();
+            controllerInputManagers = FindObjectsByType<ControllerInputActionManager>(FindObjectsSortMode.None);
+
 
         // set all locomotion behaviours to disabled, and add them to the list
         foreach (var locCheck in locomotionChecks)
@@ -82,46 +83,39 @@ public class ExperimentManager : MonoBehaviour
         }
 
         // use the automover first or random locomotion
-        if (isExperimentRunning)
+        if(isExperimentRunning)
         {
             if (useAutoMoveFirst)
             {
                 ApplyLocomotionLock(locomotionChecks[0]);
                 ShowHelperTextForCurrentLocomotion();
-
-                // Immediately disable AutoMove so the player doesn't move during the 5-second popup phase
-                locomotionChecks[0].locomotionBehaviour.enabled = false;
                 locomotionChecks[0].used = true;
-
-                StartCoroutine(ActivateAutoMove());
+                // StartCoroutine(ActivateAutoMove());      // auto activate the automove after 5 seconds
             }
             else
             {
                 RandomPickLocomotion();
             }
+            
+            player.transform.position = spawnPoint.position;
         }
+
     }
+
 
     void Update()
     {
-        if (Keyboard.current != null)
-        {
+        if(Keyboard.current != null){
             // Stop the experiment if the Escape key is pressed
-            if (Keyboard.current.escapeKey.wasPressedThisFrame == true)
+            if(Keyboard.current.escapeKey.wasPressedThisFrame == true)
                 StopExperiment();
 
             // move the player to the current waypoint position, but slightly behind it
-            if (Keyboard.current.wKey.wasPressedThisFrame == true && waypointManager != null && checkpointSequence != null)
-            {
-                Transform targetWp = checkpointSequence.GetCheckpoint(waypointManager.CurrentWaypointIndex);
-                if (targetWp != null)
-                {
-                    player.transform.position = targetWp.position + new Vector3(0, 0, 2f);
-                }
-            }
+            if(Keyboard.current.wKey.wasPressedThisFrame == true)
+                player.transform.position = waypointManager.GetCurrentWaypointPosition() + new Vector3(0, 0, 2f); 
         }
     }
-
+    
     private void PositionPopupInFrontOfPlayer(GameObject popup)
     {
         if (popup == null || headset == null) return;
@@ -142,22 +136,17 @@ public class ExperimentManager : MonoBehaviour
         popup.transform.Rotate(0f, 180f, 0f);
     }
 
+
+
     // ----- tutorial functions ------
     public void PreExperimentStart()
     {
-        if (waypointManager != null)
-        {
-            waypointManager.DeactivateAllWaypoints();
-        }
-
+        GameObject.Find("Waypoints").GetComponent<TransformWaypoint>().ShowParticularWaypoint(-1);
         GameObject lastpopup = GameObject.Find("StartExperimentPopup");
-        if (lastpopup != null)
-        {
-            lastpopup.GetComponent<Canvas>().enabled = true;
-            // put the popup in front of the player
+        lastpopup.GetComponent<Canvas>().enabled = true;
+        // put the popup in front of the player
 
-            PositionPopupInFrontOfPlayer(lastpopup);
-        }
+        PositionPopupInFrontOfPlayer(lastpopup);
     }
 
     public void StartExperiment()
@@ -166,6 +155,8 @@ public class ExperimentManager : MonoBehaviour
         UnityEngine.SceneManagement.SceneManager.LoadScene("Experiment");
     }
 
+
+
     // ----- experiment functions ------
     private void ApplyLocomotionLock(LocCheck lc)
     {
@@ -173,12 +164,16 @@ public class ExperimentManager : MonoBehaviour
         foreach (var behaviour in allLocomotionBehaviours)
             if (behaviour != null) behaviour.enabled = false;
 
-        if (lc != null && lc.locomotionBehaviour != null)
+        // isSmoothMotionStage only toggles the extra input-routing flag below —
+        // it doesn't replace enabling the stage's own locomotion Behaviour
+        // (e.g. a DynamicMoveProvider still needs .enabled = true to move at all).
+        if (lc != null)
             lc.locomotionBehaviour.enabled = true;
 
         if (controllerInputManagers != null)
             foreach (var m in controllerInputManagers)
                 if (m != null) m.smoothMotionEnabled = isSmoothMotionStage;
+
     }
 
     public void RandomPickLocomotion()
@@ -207,9 +202,9 @@ public class ExperimentManager : MonoBehaviour
 
     public void ShowHelperTextForCurrentLocomotion()
     {
+        
         PositionPopupInFrontOfPlayer(helpPopup.gameObject);
         LocCheck currentLocomotion = locomotionChecks.Find(lc => lc.locomotionBehaviour.enabled);
-
         if (currentLocomotion != null && locoHelper.ContainsKey(currentLocomotion.locomotionName))
         {
             string helperText = locoHelper[currentLocomotion.locomotionName];
@@ -253,11 +248,11 @@ public class ExperimentManager : MonoBehaviour
 
     IEnumerator ActivateAutoMove()
     {
+        // wait for 2 seconds before allowing the next locomotion stage
         yield return new WaitForSeconds(5f);
         if (locomotionChecks.Count > 0 && locomotionChecks[0].locomotionName == "automove" && locomotionChecks[0].locomotionBehaviour != null)
         {
-            // Enabling the script triggers Start() and AlignToCurrentWaypoint() natively
-            locomotionChecks[0].locomotionBehaviour.enabled = true;
+            locomotionChecks[0].locomotionBehaviour.GetComponent<AutoLocomotion>().moveForward = true;
         }
     }
 
@@ -282,6 +277,7 @@ public class ExperimentManager : MonoBehaviour
 
         // disable the loco switcher
         if (locoswitcher != null) locoswitcher.enabled = false;
+
         // hide the helper popup
         ShowExperimentEndHelperText();
 

@@ -151,7 +151,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationArea
   m_InteractionManager: {fileID: 0}
   m_Colliders:
-  - {fileID: -4285709273640141264, guid: b74c48c2e73e17c418c9394124b75daf, type: 3}
+  - {fileID: -8156765624134346783}
   m_InteractionLayers:
     m_Bits: 2147483648
   m_DistanceCalculationMode: 2

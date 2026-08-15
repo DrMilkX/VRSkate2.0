@@ -107,7 +107,7 @@ public class TutorialManager : MonoBehaviour
             headset = Camera.main.transform;
 
         if (controllerInputManagers == null || controllerInputManagers.Length == 0)
-            controllerInputManagers = FindObjectsByType<ControllerInputActionManager>(FindObjectsSortMode.None);
+            controllerInputManagers = FindObjectsByType<ControllerInputActionManager>();
 
         BuildAllPopups();
 

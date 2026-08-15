@@ -1,26 +1,33 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Unity.XR.CoreUtils;
+// using System.Collections.Generic;
+// using Unity.XR.CoreUtils;
 
 public class AutoLocomotion : MonoBehaviour
 {
+    [Header("References")]
+    public Transform cameraTransform;
     public GameObject[] waypoints;
-    public int currentWP = 0;
-
+    [Header("Settings")]
     public float speed = 3.0f;
-
-    public bool moveForward = false;
+    public float turnSpeed = 5.0f;
+    public float pauseAmt = 1.0f; // amount of time to pause at each waypoint
+    public float testingSpeed = 9.0f; // speed for testing purposes
+    public float testingTurnSpeed = 15.0f; // turn speed for testing purposes
+    public float testingPauseAmt = 0.5f; // pause amount for testing purposes
     public bool loopWaypoints = false;
+
+    [Header("States")]
+    public int currentWP = 0;
+    public bool moveForward = false;
     private bool started = false;
     private bool finished = false;
+    public bool testingMode = false;
+    
 
     [Header("Input")]
     public InputActionReference advanceAction;
-    public Transform cameraTransform;
-    public float turnSpeed = 5.0f;
-    public float pauseAmt = 1.0f; // amount of time to pause at each waypoint
 
     void Start()
     {
@@ -33,7 +40,7 @@ public class AutoLocomotion : MonoBehaviour
         // Set the initial position to the first waypoint
         transform.position = waypoints[0].transform.position;
         started = false;
-
+        finished = false;
         // Subscribe to the advance action
         if (advanceAction != null){
             advanceAction.action.Enable();
@@ -80,8 +87,15 @@ public class AutoLocomotion : MonoBehaviour
             return;
         }
         // Move towards the current waypoint
-        if(moveForward){
-            transform.position = Vector3.MoveTowards(transform.position, currentWaypoint.transform.position, speed * Time.deltaTime);
+        if (testingMode){
+            if(moveForward){
+                transform.position = Vector3.MoveTowards(transform.position, currentWaypoint.transform.position, testingSpeed * Time.deltaTime);
+            }
+        }
+        else{
+            if(moveForward){
+                transform.position = Vector3.MoveTowards(transform.position, currentWaypoint.transform.position, speed * Time.deltaTime);
+            }
         }
     }
 
@@ -95,7 +109,12 @@ public class AutoLocomotion : MonoBehaviour
     {
         moveForward = false;
 
-        yield return new WaitForSeconds(pauseAmt);
+        if (testingMode){
+            yield return new WaitForSeconds(testingPauseAmt);
+        }
+        else{
+            yield return new WaitForSeconds(pauseAmt);
+        }
 
         // If we are at the last waypoint and not looping, stop moving forward
         if(currentWP == waypoints.Length - 1 && !loopWaypoints){
@@ -115,7 +134,12 @@ public class AutoLocomotion : MonoBehaviour
         // Rotate towards the target rotation over time
         while (Quaternion.Angle(transform.rotation, targetRotation) > 0.1f)
         {
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
+            if (testingMode){
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, testingTurnSpeed * Time.deltaTime);
+            }
+            else{
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
+            }
             yield return null;
         }
 

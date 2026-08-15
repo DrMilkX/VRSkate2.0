@@ -130,6 +130,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 943b403ecf5e0ec4caa8a10a0464a8c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AutoMoveWaypoint
+  cameraTransform: {fileID: 0}
   waypoints:
   - {fileID: 0}
   - {fileID: 0}
@@ -138,5 +139,13 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   speed: 3.5
-  moveForward: 0
+  turnSpeed: 5
+  pauseAmt: 1
+  testingSpeed: 9
+  testingTurnSpeed: 15
+  testingPauseAmt: 0.5
   loopWaypoints: 0
+  currentWP: 0
+  moveForward: 0
+  testingMode: 0
+  advanceAction: {fileID: 0}

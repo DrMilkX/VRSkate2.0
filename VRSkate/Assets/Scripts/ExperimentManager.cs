@@ -8,7 +8,7 @@ using TMPro;
 
 
 public class ExperimentManager : MonoBehaviour
-{   
+{
     public GameObject player;
     public TransformWaypoint waypointManager;
 
@@ -21,11 +21,15 @@ public class ExperimentManager : MonoBehaviour
     public Transform helpPopup;
     public TextMeshProUGUI helperTextTitle;
     public TextMeshProUGUI helperTextInstr;
+
+    // public Transform countDownPopup;
+    // public TextMeshProUGUI countDownCount;
+
     public float popupDistance = 1.2f;
     public float popupHeightOffset = 0.1f;
 
     private List<Behaviour> allLocomotionBehaviours = new List<Behaviour>();
-     
+
     [Header("Controller Input Managers")]
     [Tooltip("Used to toggle smooth motion for the joystick stage. Auto-found on Start if left empty.")]
     public ControllerInputActionManager[] controllerInputManagers;
@@ -70,7 +74,6 @@ public class ExperimentManager : MonoBehaviour
         if (controllerInputManagers == null || controllerInputManagers.Length == 0)
             controllerInputManagers = FindObjectsByType<ControllerInputActionManager>();
 
-
         // set all locomotion behaviours to disabled, and add them to the list
         foreach (var locCheck in locomotionChecks)
         {
@@ -83,20 +86,20 @@ public class ExperimentManager : MonoBehaviour
         }
 
         // use the automover first or random locomotion
-        if(isExperimentRunning)
+        if (isExperimentRunning)
         {
             if (useAutoMoveFirst)
             {
                 ApplyLocomotionLock(locomotionChecks[0]);
                 ShowHelperTextForCurrentLocomotion();
                 locomotionChecks[0].used = true;
-                // StartCoroutine(ActivateAutoMove());      // auto activate the automove after 5 seconds
+                Debug.Log($"ExperimentManager: Using automove first for this stage.");
             }
             else
             {
                 RandomPickLocomotion();
             }
-            
+
             player.transform.position = spawnPoint.position;
         }
 
@@ -105,17 +108,18 @@ public class ExperimentManager : MonoBehaviour
 
     void Update()
     {
-        if(Keyboard.current != null){
+        if (Keyboard.current != null)
+        {
             // Stop the experiment if the Escape key is pressed
-            if(Keyboard.current.escapeKey.wasPressedThisFrame == true)
+            if (Keyboard.current.escapeKey.wasPressedThisFrame == true)
                 StopExperiment();
 
             // move the player to the current waypoint position, but slightly behind it
-            if(Keyboard.current.wKey.wasPressedThisFrame == true)
-                player.transform.position = waypointManager.GetCurrentWaypointPosition() + new Vector3(0, 0, 2f); 
+            if (Keyboard.current.wKey.wasPressedThisFrame == true)
+                player.transform.position = waypointManager.GetCurrentWaypointPosition() + new Vector3(0, 0, 2f);
         }
     }
-    
+
     private void PositionPopupInFrontOfPlayer(GameObject popup)
     {
         if (popup == null || headset == null) return;
@@ -147,6 +151,7 @@ public class ExperimentManager : MonoBehaviour
         // put the popup in front of the player
 
         PositionPopupInFrontOfPlayer(lastpopup);
+        // ShowStartingCountDownPopup("Starting Experiment in 3...");
     }
 
     public void StartExperiment()
@@ -202,7 +207,7 @@ public class ExperimentManager : MonoBehaviour
 
     public void ShowHelperTextForCurrentLocomotion()
     {
-        
+
         PositionPopupInFrontOfPlayer(helpPopup.gameObject);
         LocCheck currentLocomotion = locomotionChecks.Find(lc => lc.locomotionBehaviour.enabled);
         if (currentLocomotion != null && locoHelper.ContainsKey(currentLocomotion.locomotionName))
@@ -212,13 +217,23 @@ public class ExperimentManager : MonoBehaviour
             helpPopup.gameObject.SetActive(true);
             helperTextInstr.GetComponent<TMPro.TextMeshProUGUI>().text = helperText;
             helperTextTitle.GetComponent<TMPro.TextMeshProUGUI>().text = $"[ {currentLocomotion.locomotionName.ToUpper()} ] MODE ACTIVE";
-            Debug.Log($"ExperimentManager: Helper text for '{currentLocomotion.locomotionName}': {helperText}");
+            // Debug.Log($"ExperimentManager: Helper text for '{currentLocomotion.locomotionName}': {helperText}");
         }
         else
         {
             Debug.LogWarning("ExperimentManager: No helper text found for the current locomotion.");
         }
     }
+
+    // public void ShowStartingCountDownPopup(string count)
+    // {
+    //     PositionPopupInFrontOfPlayer(countDownPopup.gameObject);
+
+    //     countDownPopup.gameObject.SetActive(true);
+    //     countDownCount.GetComponent<TMPro.TextMeshProUGUI>().text = count;
+
+        // Debug.Log($"ExperimentManager: Count down popup shown with title '{title}' and instruction '{instruction}'.");
+    // }
 
     public void ShowFreePlayHelperText()
     {
@@ -227,7 +242,7 @@ public class ExperimentManager : MonoBehaviour
         helpPopup.gameObject.SetActive(true);
         helperTextInstr.GetComponent<TMPro.TextMeshProUGUI>().text = helperText;
         helperTextTitle.GetComponent<TMPro.TextMeshProUGUI>().text = $"[ FREE PLAY ] MODE ACTIVE";
-        Debug.Log($"ExperimentManager: Free play helper text: {helperText}");
+        // Debug.Log($"ExperimentManager: Free play helper text: {helperText}");
     }
 
     public void ShowExperimentEndHelperText()
@@ -237,36 +252,20 @@ public class ExperimentManager : MonoBehaviour
         helpPopup.gameObject.SetActive(true);
         helperTextInstr.GetComponent<TMPro.TextMeshProUGUI>().text = helperText;
         helperTextTitle.GetComponent<TMPro.TextMeshProUGUI>().text = $"[ EXPERIMENT COMPLETE ]";
-        Debug.Log($"ExperimentManager: Experiment end helper text: {helperText}");
+        // Debug.Log($"ExperimentManager: Experiment end helper text: {helperText}");
     }
 
     public void AllowLocoSwitcher()
     {
-        locoswitcher.enabled = true;
+        if (locomotionChecks.Count > 0) { locomotionChecks[0].locomotionBehaviour.enabled = true; }
         ShowFreePlayHelperText();
-    }
-
-    IEnumerator ActivateAutoMove()
-    {
-        // wait for 2 seconds before allowing the next locomotion stage
-        yield return new WaitForSeconds(5f);
-        if (locomotionChecks.Count > 0 && locomotionChecks[0].locomotionName == "automove" && locomotionChecks[0].locomotionBehaviour != null)
-        {
-            locomotionChecks[0].locomotionBehaviour.GetComponent<AutoLocomotion>().moveForward = true;
-        }
     }
 
     public string GetCurrentLocomotionName()
     {
         LocCheck currentLocomotion = locomotionChecks.Find(lc => lc.locomotionBehaviour.enabled);
-        if (currentLocomotion != null)
-        {
-            return currentLocomotion.locomotionName;
-        }
-        else
-        {
-            return "Unknown";
-        }
+        if (currentLocomotion != null) { return currentLocomotion.locomotionName; }
+        else { return "Unknown"; }
     }
 
     public void StopExperiment()
@@ -276,7 +275,7 @@ public class ExperimentManager : MonoBehaviour
             if (behaviour != null) behaviour.enabled = false;
 
         // disable the loco switcher
-        if (locoswitcher != null) locoswitcher.enabled = false;
+        if (locomotionChecks.Count > 0) { locomotionChecks[0].locomotionBehaviour.enabled = false; }
 
         // hide the helper popup
         ShowExperimentEndHelperText();

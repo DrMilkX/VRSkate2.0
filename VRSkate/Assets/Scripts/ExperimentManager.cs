@@ -68,7 +68,7 @@ public class ExperimentManager : MonoBehaviour
     {
 
         if (controllerInputManagers == null || controllerInputManagers.Length == 0)
-            controllerInputManagers = FindObjectsByType<ControllerInputActionManager>(FindObjectsSortMode.None);
+            controllerInputManagers = FindObjectsByType<ControllerInputActionManager>();
 
 
         // set all locomotion behaviours to disabled, and add them to the list

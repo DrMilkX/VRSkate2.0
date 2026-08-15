@@ -87,7 +87,7 @@ public class TutorialManager : MonoBehaviour
         // Start()/BuildMenu()/ActivateLocomotion() never fires while it's
         // disabled here — it fires later, once CompleteTutorial() re-enables it.
         if (locomotionSwitcherToDisable == null)
-            locomotionSwitcherToDisable = FindFirstObjectByType<LocomotionSwitcher>();
+            locomotionSwitcherToDisable = FindAnyObjectByType<LocomotionSwitcher>();
         if (locomotionSwitcherToDisable != null)
             locomotionSwitcherToDisable.enabled = false;
     }

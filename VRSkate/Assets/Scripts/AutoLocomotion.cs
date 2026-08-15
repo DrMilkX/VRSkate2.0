@@ -18,8 +18,6 @@ public class AutoLocomotion : MonoBehaviour
 
     [Header("Input")]
     public InputActionReference advanceAction;
-    private bool advanceWasPressed = false;
-
     public Transform cameraTransform;
     public float turnSpeed = 5.0f;
     public float pauseAmt = 1.0f; // amount of time to pause at each waypoint

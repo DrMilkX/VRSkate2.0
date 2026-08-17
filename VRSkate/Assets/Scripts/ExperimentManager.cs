@@ -16,7 +16,7 @@ public class ExperimentManager : MonoBehaviour
 
 
     public Transform headset;
-    public Behaviour locoswitcher;
+    public QuickLocoSwitch quicklocoswitch;
 
     public Transform helpPopup;
     public TextMeshProUGUI helperTextTitle;
@@ -101,6 +101,7 @@ public class ExperimentManager : MonoBehaviour
             }
 
             player.transform.position = spawnPoint.position;
+            quicklocoswitch.canUseMenu = false;     // disable loco switcher
         }
 
     }
@@ -238,7 +239,7 @@ public class ExperimentManager : MonoBehaviour
     public void ShowFreePlayHelperText()
     {
         PositionPopupInFrontOfPlayer(helpPopup.gameObject);
-        string helperText = "You are now in free play mode.\n\nPress B to switch locomotion modes in the menu and select with trigger.";
+        string helperText = "You are now in free play mode.\n\nPress A to switch locomotion modes in the menu and select with trigger.";
         helpPopup.gameObject.SetActive(true);
         helperTextInstr.GetComponent<TMPro.TextMeshProUGUI>().text = helperText;
         helperTextTitle.GetComponent<TMPro.TextMeshProUGUI>().text = $"[ FREE PLAY ] MODE ACTIVE";
@@ -257,7 +258,18 @@ public class ExperimentManager : MonoBehaviour
 
     public void AllowLocoSwitcher()
     {
-        if (locomotionChecks.Count > 0) { locomotionChecks[0].locomotionBehaviour.enabled = true; }
+        // if (locomotionChecks.Count > 0) { locomotionChecks[0].locomotionBehaviour.enabled = true; }
+
+        
+        // enable locomotion switcher
+        if (quicklocoswitch != null) {
+            quicklocoswitch.canUseMenu = true;
+        }
+        
+        // disable all locomotion behaviours
+        foreach (var behaviour in allLocomotionBehaviours)
+            if (behaviour != null) behaviour.enabled = false;
+
         ShowFreePlayHelperText();
     }
 
@@ -275,7 +287,8 @@ public class ExperimentManager : MonoBehaviour
             if (behaviour != null) behaviour.enabled = false;
 
         // disable the loco switcher
-        if (locomotionChecks.Count > 0) { locomotionChecks[0].locomotionBehaviour.enabled = false; }
+        // if (locoswitcher != null) locoswitcher.enabled = false;
+        // if (locomotionChecks.Count > 0) { locomotionChecks[0].locomotionBehaviour.enabled = false; }
 
         // hide the helper popup
         ShowExperimentEndHelperText();

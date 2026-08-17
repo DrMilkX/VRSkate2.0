@@ -19,7 +19,7 @@ public class ExperimentLogger : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private TransformWaypoint waypointSystem;
-    [SerializeField] private LocomotionSwitcher locomotionSwitcher;
+    [SerializeField] private QuickLocoSwitch locomotionSwitcher;
     [SerializeField] private ExperimentManager experimentManager;
     [SerializeField] private Transform playerTransform;
 
@@ -53,7 +53,7 @@ public class ExperimentLogger : MonoBehaviour
             waypointSystem = FindAnyObjectByType<TransformWaypoint>();
 
         if (locomotionSwitcher == null)
-            locomotionSwitcher = FindAnyObjectByType<LocomotionSwitcher>();
+            locomotionSwitcher = FindAnyObjectByType<QuickLocoSwitch>();
 
         if (playerTransform == null && waypointSystem != null)
             playerTransform = waypointSystem.playerTransform;

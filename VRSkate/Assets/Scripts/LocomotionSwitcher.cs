@@ -52,8 +52,8 @@ public class LocomotionSwitcher : MonoBehaviour
     [Tooltip("HoverboardLocomotion script — for the settings submenu")]
     public HoverboardLocomotion hoverboard;
 
-    [Tooltip("AutoMoveWaypoint script — for the rail-style waypoint mode")]
-    public AutoMoveWaypoint autoMove;
+    [Tooltip("AutoLocomotion script — for the rail-style waypoint mode")]
+    public AutoLocomotion autoMove;
 
     [Header("Abilities")]
     [Tooltip("Jump Provider script — to be disabled in automove")]
@@ -77,6 +77,7 @@ public class LocomotionSwitcher : MonoBehaviour
     public GameObject[] menuRayObjects;
 
     public bool experimentMode = false;
+    public bool allowShowMenu = true;
 
     // -------------------------------------------------------------------------
     // Inspector — Scene Switcher
@@ -107,7 +108,7 @@ public class LocomotionSwitcher : MonoBehaviour
 
     // Panels
     private GameObject menuRoot;
-    private GameObject mainPanel;
+    private GameObject mainPanel = null;
     private GameObject settingsPanel;
     private GameObject scenePanel;
 
@@ -135,7 +136,7 @@ public class LocomotionSwitcher : MonoBehaviour
             hoverboard = GetComponent<HoverboardLocomotion>();
 
         if (autoMove == null)
-            autoMove = GetComponent<AutoMoveWaypoint>();
+            autoMove = GetComponent<AutoLocomotion>();
 
         if (controllerInputManagers == null || controllerInputManagers.Length == 0)
             controllerInputManagers = GetComponentsInChildren<ControllerInputActionManager>(true);
@@ -147,7 +148,7 @@ public class LocomotionSwitcher : MonoBehaviour
             foreach (var go in menuRayObjects)
                 if (go != null) go.SetActive(false);
 
-        if (locomotionOptions.Count > 0)
+        if (locomotionOptions.Count > 0 && !experimentMode)
             ActivateLocomotion(0);
 
         SetMenuVisible(false);
@@ -155,7 +156,8 @@ public class LocomotionSwitcher : MonoBehaviour
 
     private void Update()
     {
-        PollBButton();
+        if(allowShowMenu)
+            PollBButton();
     }
 
     // -------------------------------------------------------------------------
@@ -211,17 +213,18 @@ public class LocomotionSwitcher : MonoBehaviour
 
     private void SetMenuVisible(bool visible)
     {
-        if(mainPanel == null)
-            BuildMenu();
-
         menuOpen = visible;
         menuRoot.SetActive(visible);
+
+        Debug.Log("[LocomotionSwitcher] Menu root visible: " + menuRoot.activeSelf);
+        Debug.Log("[LocomotionSwitcher] Main panel exists?: " + (mainPanel != null));
+        Debug.Log("[LocomotionSwitcher] Main panel visible?: " + mainPanel.activeSelf);
 
         if (menuRayObjects != null)
             foreach (var go in menuRayObjects)
                 if (go != null) go.SetActive(visible);
 
-        if (visible)
+        if (visible && mainPanel != null)
         {
             ShowPanel(mainPanel);
             PositionMenuInFrontOfPlayer();
@@ -322,7 +325,7 @@ public class LocomotionSwitcher : MonoBehaviour
         if (opt == null)
             return false;
 
-        if (opt.locomotionComponent is AutoMoveWaypoint)
+        if (opt.locomotionComponent is AutoLocomotion)
             return true;
 
         if (!string.IsNullOrWhiteSpace(opt.displayName))
@@ -370,6 +373,8 @@ public class LocomotionSwitcher : MonoBehaviour
             settingsPanel = null;
             scenePanel = null;
         }
+
+        Debug.Log("Menu created!");
     }
 
     // ── Main panel ────────────────────────────────────────────────────────────

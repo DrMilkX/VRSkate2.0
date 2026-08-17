@@ -1766,6 +1766,7 @@ MonoBehaviour:
   - {fileID: 7102387344919228745}
   - {fileID: 4357626221688825758}
   experimentMode: 0
+  allowShowMenu: 1
   sceneNames:
   - suburbs2
   - city

@@ -172,6 +172,13 @@ public class HoverboardLocomotion : MonoBehaviour
         }
     }
 
+
+    private void OnDisable()
+    {
+        EBrake();
+    }
+
+
     // -------------------------------------------------------------------------
     // Position history — continuously sampled every frame, old entries pruned
     // -------------------------------------------------------------------------

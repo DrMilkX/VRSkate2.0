@@ -1,19 +1,26 @@
 using System;
 using System.Collections;
+using System.Globalization;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
 
 /// <summary>
-/// Logs one row per waypoint-to-waypoint segment: time taken, locomotion mode used,
-/// and how directly the player traveled (straight-line vs. actual distance covered).
-/// Subscribes to TransformWaypoint.OnWaypointReached, so it does not need any changes
-/// to how the waypoint system itself works.
+/// Samples the player's position + active locomotion method every N frames and writes one
+/// row per sample to a CSV time-series. Waypoint arrivals are written as extra "event" rows
+/// so the delivery points can be marked in playback.
 ///
-/// The CSV is written to disk in real time (flushed after every row) as the source of
-/// truth. On top of that, the whole file is opportunistically POSTed to a local server
-/// on the same network whenever the session ends (normally or prematurely) so it can be
-/// collected without cabling the headset to a PC.
+/// The CSV is the source of truth (flushed after every row). When the session ends it is also
+/// POSTed to a local server if uploading is enabled, so data can be collected without cabling
+/// the headset to a PC.
+///
+/// Columns: Time,Frame,Event,LocomotionMode,PosX,PosY,PosZ,RotY
+///   Time  = seconds since logging started
+///   Frame = Unity frame count at the sample
+///   Event = empty for normal samples, waypoint name on arrival rows
+///   RotY  = player yaw in degrees (handy for orienting a playback marker)
+///
+/// Re-import with ExperimentVisualizer (scene: Exp_Visualizer) to redraw the path.
 /// </summary>
 public class ExperimentLogger : MonoBehaviour
 {
@@ -22,6 +29,10 @@ public class ExperimentLogger : MonoBehaviour
     [SerializeField] private QuickLocoSwitch locomotionSwitcher;
     [SerializeField] private ExperimentManager experimentManager;
     [SerializeField] private Transform playerTransform;
+
+    [Header("Sampling")]
+    [Tooltip("Write one position/locomotion sample every this many frames. 1 = every frame.")]
+    [SerializeField] private int sampleEveryNFrames = 5;
 
     [Header("Session")]
     [SerializeField] private string participantId = "P00";
@@ -42,12 +53,11 @@ public class ExperimentLogger : MonoBehaviour
     private string effectiveParticipantId;
     private string effectiveUploadUrl;
     private bool isUploading;
-    private int segmentIndex;
-    private float segmentStartTime;
-    private DateTime segmentStartTimestamp;
-    private Vector3 segmentStartPosition;
-    private Vector3 lastSampledPosition;
-    private float traveledDistance;
+    private float startTime;
+    private int frameCounter;
+
+    // Invariant culture so decimals are always '.' regardless of the device locale.
+    private static readonly CultureInfo Inv = CultureInfo.InvariantCulture;
 
     private void Awake()
     {
@@ -56,6 +66,9 @@ public class ExperimentLogger : MonoBehaviour
 
         if (locomotionSwitcher == null)
             locomotionSwitcher = FindAnyObjectByType<QuickLocoSwitch>();
+
+        if (experimentManager == null)
+            experimentManager = FindAnyObjectByType<ExperimentManager>();
 
         if (playerTransform == null && waypointSystem != null)
             playerTransform = waypointSystem.playerTransform;
@@ -75,52 +88,29 @@ public class ExperimentLogger : MonoBehaviour
 
     private void Start()
     {
+        startTime = Time.time;
         OpenLogFile();
-        BeginSegment();
+        WriteSample("start");   // anchor row at the spawn position
     }
 
     private void Update()
     {
-        if (playerTransform == null)
+        if (playerTransform == null || writer == null)
             return;
 
-        traveledDistance += Vector3.Distance(playerTransform.position, lastSampledPosition);
-        lastSampledPosition = playerTransform.position;
+        if (sampleEveryNFrames < 1)
+            sampleEveryNFrames = 1;
+
+        frameCounter++;
+        if (frameCounter % sampleEveryNFrames == 0)
+            WriteSample(null);
     }
 
-    private void BeginSegment()
-    {
-        segmentStartTime = Time.time;
-        segmentStartTimestamp = DateTime.Now;
-        traveledDistance = 0f;
-
-        if (playerTransform != null)
-        {
-            segmentStartPosition = playerTransform.position;
-            lastSampledPosition = playerTransform.position;
-        }
-    }
-
+    // A waypoint arrival is written immediately (regardless of the sampling cadence) so the
+    // delivery point is captured exactly, tagged with the waypoint name in the Event column.
     private void HandleWaypointReached(int waypointIndex, Transform waypoint)
     {
-        float segmentTime = Time.time - segmentStartTime;
-        DateTime segmentEndTimestamp = DateTime.Now;
-        float straightLineDistance = playerTransform != null
-            ? Vector3.Distance(segmentStartPosition, waypoint.position)
-            : 0f;
-        float pathEfficiency = traveledDistance > 0.0001f ? straightLineDistance / traveledDistance : 0f;
-        string locomotionMode = locomotionSwitcher != null ? locomotionSwitcher.CurrentLocomotionName : "Unknown";
-
-        // override with experiment mode
-        if (experimentManager != null && experimentManager.isExperimentRunning)
-            locomotionMode = experimentManager.GetCurrentLocomotionName();
-
-        WriteRow(waypointIndex, waypoint.name, segmentTime, segmentStartTimestamp, segmentEndTimestamp,
-            locomotionMode, straightLineDistance, traveledDistance, pathEfficiency,
-            segmentStartPosition, waypoint.position);
-
-        segmentIndex++;
-        BeginSegment();
+        WriteSample(waypoint != null ? waypoint.name : $"waypoint_{waypointIndex}");
 
         // Non-looping waypoint systems have no further "reached" events after the last one,
         // so this is the natural end of the session - upload now instead of waiting for quit.
@@ -128,6 +118,16 @@ public class ExperimentLogger : MonoBehaviour
             && waypointIndex == waypointSystem.waypoints.Length - 1;
         if (isFinalWaypoint)
             EndSession();
+    }
+
+    private string GetLocomotionMode()
+    {
+        // The experiment drives the mode while running; otherwise fall back to the free-play menu.
+        if (experimentManager != null && experimentManager.isExperimentRunning)
+            return experimentManager.GetCurrentLocomotionName();
+        if (locomotionSwitcher != null)
+            return locomotionSwitcher.CurrentLocomotionName;
+        return "Unknown";
     }
 
     private void OpenLogFile()
@@ -147,45 +147,36 @@ public class ExperimentLogger : MonoBehaviour
         logFilePath = Path.Combine(directory, fileName);
 
         writer = new StreamWriter(logFilePath, append: false);
-        writer.WriteLine("ParticipantId,SegmentIndex,WaypointIndex,WaypointName,SegmentStartTimestamp,SegmentEndTimestamp,SegmentTimeSeconds,LocomotionMode," +
-                          "StraightLineDistance,TraveledDistance,PathEfficiency,StartX,StartY,StartZ,TargetX,TargetY,TargetZ");
+        writer.WriteLine("Time,Frame,Event,LocomotionMode,PosX,PosY,PosZ,RotY");
         writer.Flush();
 
-        Debug.Log($"ExperimentLogger: Logging to {logFilePath}");
+        Debug.Log($"ExperimentLogger: Logging samples (every {sampleEveryNFrames} frame(s)) to {logFilePath}");
     }
 
-    private void WriteRow(int waypointIndex, string waypointName, float segmentTime,
-        DateTime startTimestamp, DateTime endTimestamp, string locomotionMode,
-        float straightLineDistance, float distanceTraveled, float pathEfficiency,
-        Vector3 startPosition, Vector3 targetPosition)
+    private void WriteSample(string eventName)
     {
-        if (writer == null)
+        if (writer == null || playerTransform == null)
             return;
 
+        Vector3 p = playerTransform.position;
+        float rotY = playerTransform.eulerAngles.y;
+        float t = Time.time - startTime;
+
         string line = string.Join(",",
-            CsvField(effectiveParticipantId),
-            segmentIndex,
-            waypointIndex,
-            CsvField(waypointName),
-            startTimestamp.ToString("o"),
-            endTimestamp.ToString("o"),
-            segmentTime.ToString("F3"),
-            CsvField(locomotionMode),
-            straightLineDistance.ToString("F3"),
-            distanceTraveled.ToString("F3"),
-            pathEfficiency.ToString("F3"),
-            startPosition.x.ToString("F3"),
-            startPosition.y.ToString("F3"),
-            startPosition.z.ToString("F3"),
-            targetPosition.x.ToString("F3"),
-            targetPosition.y.ToString("F3"),
-            targetPosition.z.ToString("F3"));
+            t.ToString("F3", Inv),
+            Time.frameCount.ToString(Inv),
+            CsvField(eventName ?? string.Empty),
+            CsvField(GetLocomotionMode()),
+            p.x.ToString("F4", Inv),
+            p.y.ToString("F4", Inv),
+            p.z.ToString("F4", Inv),
+            rotY.ToString("F2", Inv));
 
         writer.WriteLine(line);
         writer.Flush();
     }
 
-    // Wraps a field in quotes if it contains a comma or quote, so waypoint/object names can't break the CSV.
+    // Wraps a field in quotes if it contains a comma or quote, so names can't break the CSV.
     private static string CsvField(string value)
     {
         if (string.IsNullOrEmpty(value))

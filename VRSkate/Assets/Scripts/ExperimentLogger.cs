@@ -39,6 +39,8 @@ public class ExperimentLogger : MonoBehaviour
 
     private StreamWriter writer;
     private string logFilePath;
+    private string effectiveParticipantId;
+    private string effectiveUploadUrl;
     private bool isUploading;
     private int segmentIndex;
     private float segmentStartTime;
@@ -130,10 +132,18 @@ public class ExperimentLogger : MonoBehaviour
 
     private void OpenLogFile()
     {
+        // Prefer the ID/name the PI entered in the exp_setup scene; fall back to the
+        // Inspector value (e.g. when testing this scene directly, without a setup session).
+        string sessionParticipantId = ExperimentSession.GetParticipantId();
+        effectiveParticipantId = string.IsNullOrEmpty(sessionParticipantId) ? participantId : sessionParticipantId;
+
+        string sessionServerUrl = ExperimentSession.GetServerBaseUrl();
+        effectiveUploadUrl = string.IsNullOrEmpty(sessionServerUrl) ? uploadUrl : sessionServerUrl.TrimEnd('/') + "/upload";
+
         string directory = Path.Combine(Application.persistentDataPath, outputFolderName);
         Directory.CreateDirectory(directory);
 
-        string fileName = $"{participantId}_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
+        string fileName = $"{effectiveParticipantId}_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
         logFilePath = Path.Combine(directory, fileName);
 
         writer = new StreamWriter(logFilePath, append: false);
@@ -153,7 +163,7 @@ public class ExperimentLogger : MonoBehaviour
             return;
 
         string line = string.Join(",",
-            CsvField(participantId),
+            CsvField(effectiveParticipantId),
             segmentIndex,
             waypointIndex,
             CsvField(waypointName),
@@ -209,7 +219,7 @@ public class ExperimentLogger : MonoBehaviour
 
     private IEnumerator UploadLogFile()
     {
-        if (isUploading || string.IsNullOrEmpty(uploadUrl) || string.IsNullOrEmpty(logFilePath))
+        if (isUploading || string.IsNullOrEmpty(effectiveUploadUrl) || string.IsNullOrEmpty(logFilePath))
             yield break;
 
         isUploading = true;
@@ -228,7 +238,7 @@ public class ExperimentLogger : MonoBehaviour
 
         if (fileBytes != null)
         {
-            using (UnityWebRequest request = new UnityWebRequest(uploadUrl, UnityWebRequest.kHttpVerbPOST))
+            using (UnityWebRequest request = new UnityWebRequest(effectiveUploadUrl, UnityWebRequest.kHttpVerbPOST))
             {
                 request.uploadHandler = new UploadHandlerRaw(fileBytes);
                 request.downloadHandler = new DownloadHandlerBuffer();
@@ -239,7 +249,7 @@ public class ExperimentLogger : MonoBehaviour
                 yield return request.SendWebRequest();
 
                 if (request.result == UnityWebRequest.Result.Success)
-                    Debug.Log($"ExperimentLogger: Uploaded log to {uploadUrl}");
+                    Debug.Log($"ExperimentLogger: Uploaded log to {effectiveUploadUrl}");
                 else
                     Debug.LogWarning($"ExperimentLogger: Upload failed - {request.error}. Data is still saved locally at {logFilePath}");
             }

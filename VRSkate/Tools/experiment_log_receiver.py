@@ -4,15 +4,17 @@ Minimal local receiver for ExperimentLogger.cs uploads.
 Run this on the Windows machine while it's on the same Wi-Fi network as the
 Quest headset. The headset POSTs the CSV log to this server whenever a
 session ends (normally or prematurely); this script just writes the bytes
-it receives to disk.
+it receives to disk. GET /health also lets the exp_setup scene's "Test
+Server Connection" button confirm the server is up before the PI hands the
+headset to a participant.
 
 No third-party dependencies - only the Python standard library.
 
 Usage:
     python experiment_log_receiver.py [--port 8000] [--out received_logs]
 
-Then in ExperimentLogger's Inspector, set Upload Url to:
-    http://<this-machine's-LAN-IP>:8000/upload
+Then in the exp_setup scene, set the Logging Server Address field to:
+    http://<this-machine's-LAN-IP>:8000
 (Find the IP with `ipconfig` on Windows - use the Wi-Fi adapter's IPv4 address.)
 """
 
@@ -29,6 +31,18 @@ SAFE_FILENAME_RE = re.compile(r"^[A-Za-z0-9._-]+$")
 
 def make_handler(output_dir: str):
     class UploadHandler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            if self.path != "/health":
+                self.send_error(404, "Unknown endpoint")
+                return
+
+            body = b"OK"
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
         def do_POST(self):
             if self.path != "/upload":
                 self.send_error(404, "Unknown endpoint")
@@ -71,7 +85,7 @@ def main():
 
     server = ThreadingHTTPServer(("0.0.0.0", args.port), make_handler(os.path.abspath(args.out)))
     print(f"Listening on port {args.port}, saving files to {os.path.abspath(args.out)}")
-    print("Set ExperimentLogger's Upload Url to http://<this-machine-IP>:%d/upload" % args.port)
+    print("In exp_setup, set Logging Server Address to http://<this-machine-IP>:%d" % args.port)
     print("Press Ctrl+C to stop.")
 
     try:

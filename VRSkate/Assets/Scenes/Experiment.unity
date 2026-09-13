@@ -19021,60 +19021,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a21b85f8e688fb9489f65b8ceb6779a6, type: 3}
   m_PrefabInstance: {fileID: 371488431}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &371913352
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1896694115}
-    m_Modifications:
-    - target: {fileID: 100000, guid: 484404636ac422042a24ac95512dc2d3, type: 3}
-      propertyPath: m_Name
-      value: Props_Traffic Control Barrier Fence (3)
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 484404636ac422042a24ac95512dc2d3, type: 3}
-      propertyPath: m_RootOrder
-      value: 721
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 484404636ac422042a24ac95512dc2d3, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 259.37
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 484404636ac422042a24ac95512dc2d3, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 484404636ac422042a24ac95512dc2d3, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -91.18
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 484404636ac422042a24ac95512dc2d3, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 484404636ac422042a24ac95512dc2d3, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.000000021855694
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 484404636ac422042a24ac95512dc2d3, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 484404636ac422042a24ac95512dc2d3, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 484404636ac422042a24ac95512dc2d3, type: 3}
---- !u!4 &371913353 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 400000, guid: 484404636ac422042a24ac95512dc2d3, type: 3}
-  m_PrefabInstance: {fileID: 371913352}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &372500226
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -51848,15 +51794,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 7c4f51fd36e931a4da3d96144ca744fc, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -83.285065
+      value: -99.98
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7c4f51fd36e931a4da3d96144ca744fc, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.20000537
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7c4f51fd36e931a4da3d96144ca744fc, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -21.191917
+      value: -28.62
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7c4f51fd36e931a4da3d96144ca744fc, type: 3}
       propertyPath: m_LocalRotation.w
@@ -55188,7 +55134,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3906972105727689417, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.91
+      value: 28.129993
       objectReference: {fileID: 0}
     - target: {fileID: 3906972105727689417, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: m_LocalRotation.w
@@ -58837,10 +58783,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExperimentManager
   player: {fileID: 935467046}
+  playerRigidbody: {fileID: 1861784377}
   waypointManager: {fileID: 366641777}
   spawnPoint: {fileID: 777247998}
   headset: {fileID: 504283504}
-  quicklocoswitch: {fileID: 0}
+  quicklocoswitch: {fileID: 1306793176}
   helpPopup: {fileID: 958743165}
   helperTextTitle: {fileID: 29864620}
   helperTextInstr: {fileID: 25048768}
@@ -58898,7 +58845,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExperimentLogger
   waypointSystem: {fileID: 366641777}
-  locomotionSwitcher: {fileID: 0}
+  locomotionSwitcher: {fileID: 1306793176}
   experimentManager: {fileID: 1205741894}
   playerTransform: {fileID: 1861784371}
   participantId: P00
@@ -62820,6 +62767,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 504283504}
     - target: {fileID: 1923736052457529419, guid: d2434ca6cee635b459d39b98015f2363, type: 3}
+      propertyPath: canUseMenu
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1923736052457529419, guid: d2434ca6cee635b459d39b98015f2363, type: 3}
       propertyPath: locos.Array.data[0].behavior
       value: 
       objectReference: {fileID: 504283506}
@@ -63092,6 +63043,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d2434ca6cee635b459d39b98015f2363, type: 3}
+--- !u!114 &1306793176 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1923736052457529419, guid: d2434ca6cee635b459d39b98015f2363, type: 3}
+  m_PrefabInstance: {fileID: 1306793175}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 347477786444a644e980f1fd2d132a73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::QuickLocoSwitch
 --- !u!1001 &1308522627
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -64226,7 +64188,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 6a81c102cc125604abf9d7c70fcaa8bc, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 127.47
+      value: 126.83
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6a81c102cc125604abf9d7c70fcaa8bc, type: 3}
       propertyPath: m_LocalPosition.y
@@ -64234,7 +64196,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6a81c102cc125604abf9d7c70fcaa8bc, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -64.52
+      value: -38.3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6a81c102cc125604abf9d7c70fcaa8bc, type: 3}
       propertyPath: m_LocalRotation.w
@@ -93687,60 +93649,6 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: c887da5f6e3230f4aa38afe5e8e30387, type: 3}
---- !u!1001 &1848827532
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1896694115}
-    m_Modifications:
-    - target: {fileID: 100000, guid: 484404636ac422042a24ac95512dc2d3, type: 3}
-      propertyPath: m_Name
-      value: Props_Traffic Control Barrier Fence (2)
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 484404636ac422042a24ac95512dc2d3, type: 3}
-      propertyPath: m_RootOrder
-      value: 721
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 484404636ac422042a24ac95512dc2d3, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 254.57
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 484404636ac422042a24ac95512dc2d3, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 484404636ac422042a24ac95512dc2d3, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -91.29
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 484404636ac422042a24ac95512dc2d3, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 484404636ac422042a24ac95512dc2d3, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.000000021855694
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 484404636ac422042a24ac95512dc2d3, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 484404636ac422042a24ac95512dc2d3, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 484404636ac422042a24ac95512dc2d3, type: 3}
---- !u!4 &1848827533 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 400000, guid: 484404636ac422042a24ac95512dc2d3, type: 3}
-  m_PrefabInstance: {fileID: 1848827532}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1850134768 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 03601052ea3fa844ab1574340560cdcb, type: 3}
@@ -94057,6 +93965,11 @@ MonoBehaviour:
 --- !u!4 &1861784371 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5160022970801363678, guid: 63923e886d16bf34ab42cdab16c68e42, type: 3}
+  m_PrefabInstance: {fileID: 6587935839412536402}
+  m_PrefabAsset: {fileID: 0}
+--- !u!143 &1861784377 stripped
+CharacterController:
+  m_CorrespondingSourceObject: {fileID: 3511365476685758432, guid: 63923e886d16bf34ab42cdab16c68e42, type: 3}
   m_PrefabInstance: {fileID: 6587935839412536402}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1862549814
@@ -95922,8 +95835,6 @@ Transform:
   - {fileID: 1942665420}
   - {fileID: 1910120654}
   - {fileID: 2011980822}
-  - {fileID: 1848827533}
-  - {fileID: 371913353}
   - {fileID: 1986402129}
   - {fileID: 2027829705}
   - {fileID: 2004650301}
@@ -113655,7 +113566,7 @@ PrefabInstance:
       objectReference: {fileID: 1468197178}
     - target: {fileID: 753906940535007786, guid: 63923e886d16bf34ab42cdab16c68e42, type: 3}
       propertyPath: speed
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 753906940535007786, guid: 63923e886d16bf34ab42cdab16c68e42, type: 3}
       propertyPath: turnSpeed
@@ -113663,7 +113574,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 753906940535007786, guid: 63923e886d16bf34ab42cdab16c68e42, type: 3}
       propertyPath: testingMode
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 753906940535007786, guid: 63923e886d16bf34ab42cdab16c68e42, type: 3}
       propertyPath: advanceAction

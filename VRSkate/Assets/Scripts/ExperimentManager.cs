@@ -10,6 +10,7 @@ using TMPro;
 public class ExperimentManager : MonoBehaviour
 {
     public GameObject player;
+    public CharacterController playerRigidbody;
     public TransformWaypoint waypointManager;
 
     public Transform spawnPoint;
@@ -169,6 +170,14 @@ public class ExperimentManager : MonoBehaviour
         bool isSmoothMotionStage = lc.isSmoothMotionStage;
         foreach (var behaviour in allLocomotionBehaviours)
             if (behaviour != null) behaviour.enabled = false;
+
+
+        // make sure the player isn't still moving before applying the locomotion lock
+        if (playerRigidbody != null)
+        {
+            playerRigidbody.Move(Vector3.zero);
+            
+        }
 
         // isSmoothMotionStage only toggles the extra input-routing flag below —
         // it doesn't replace enabling the stage's own locomotion Behaviour

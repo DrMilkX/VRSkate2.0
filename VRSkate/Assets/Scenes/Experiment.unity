@@ -127,6 +127,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1495765492}
     m_Modifications:
+    - target: {fileID: -8156765624134346783, guid: 2d5fb229ae2945742b900a405a5e7a0b, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 2d5fb229ae2945742b900a405a5e7a0b, type: 3}
       propertyPath: m_Name
       value: Natures_House Floor (19)
@@ -12724,15 +12728,15 @@ PrefabInstance:
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 366641777}
+      objectReference: {fileID: 129327306}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 1205741894}
+      objectReference: {fileID: 366641777}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
-      objectReference: {fileID: 129327306}
+      objectReference: {fileID: 1205741894}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
@@ -12743,23 +12747,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: NextWaypoint
-      objectReference: {fileID: 0}
-    - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
-      propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: RandomPickLocomotion
-      objectReference: {fileID: 0}
-    - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
-      propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
       value: GivePizza
       objectReference: {fileID: 0}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
+      propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: NextWaypoint
+      objectReference: {fileID: 0}
+    - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
+      propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: RandomPickLocomotion
+      objectReference: {fileID: 0}
+    - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
+      propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GetPizza, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: ExperimentManager, Assembly-CSharp
+      value: TransformWaypoint, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
-      value: GetPizza, Assembly-CSharp
+      value: ExperimentManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -20029,15 +20037,15 @@ PrefabInstance:
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 366641777}
+      objectReference: {fileID: 1790277913}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 1205741894}
+      objectReference: {fileID: 366641777}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
-      objectReference: {fileID: 1790277913}
+      objectReference: {fileID: 1205741894}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
@@ -20048,23 +20056,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: NextWaypoint
-      objectReference: {fileID: 0}
-    - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
-      propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: RandomPickLocomotion
-      objectReference: {fileID: 0}
-    - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
-      propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
       value: GivePizza
       objectReference: {fileID: 0}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
+      propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: NextWaypoint
+      objectReference: {fileID: 0}
+    - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
+      propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: RandomPickLocomotion
+      objectReference: {fileID: 0}
+    - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
+      propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GetPizza, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: ExperimentManager, Assembly-CSharp
+      value: TransformWaypoint, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
-      value: GetPizza, Assembly-CSharp
+      value: ExperimentManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -55179,15 +55191,15 @@ PrefabInstance:
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 366641777}
+      objectReference: {fileID: 1327675320}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 1205741894}
+      objectReference: {fileID: 366641777}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
-      objectReference: {fileID: 1327675320}
+      objectReference: {fileID: 1205741894}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
@@ -55198,23 +55210,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: NextWaypoint
-      objectReference: {fileID: 0}
-    - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
-      propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: RandomPickLocomotion
-      objectReference: {fileID: 0}
-    - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
-      propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
       value: GivePizza
       objectReference: {fileID: 0}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
+      propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: NextWaypoint
+      objectReference: {fileID: 0}
+    - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
+      propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: RandomPickLocomotion
+      objectReference: {fileID: 0}
+    - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
+      propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GetPizza, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: ExperimentManager, Assembly-CSharp
+      value: TransformWaypoint, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
-      value: GetPizza, Assembly-CSharp
+      value: ExperimentManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -58817,6 +58833,7 @@ MonoBehaviour:
     used: 0
   isExperimentRunning: 1
   useAutoMoveFirst: 1
+  driftDebug: 1
 --- !u!4 &1205741895
 Transform:
   m_ObjectHideFlags: 0
@@ -78957,15 +78974,15 @@ PrefabInstance:
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 366641777}
+      objectReference: {fileID: 665169140}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 1205741894}
+      objectReference: {fileID: 366641777}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
-      objectReference: {fileID: 665169140}
+      objectReference: {fileID: 1205741894}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
@@ -78976,23 +78993,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: NextWaypoint
-      objectReference: {fileID: 0}
-    - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
-      propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: AllowLocoSwitcher
-      objectReference: {fileID: 0}
-    - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
-      propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
       value: GivePizza
       objectReference: {fileID: 0}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
+      propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: NextWaypoint
+      objectReference: {fileID: 0}
+    - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
+      propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: AllowLocoSwitcher
+      objectReference: {fileID: 0}
+    - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
+      propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GetPizza, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: ExperimentManager, Assembly-CSharp
+      value: TransformWaypoint, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
-      value: GetPizza, Assembly-CSharp
+      value: ExperimentManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -110299,7 +110320,7 @@ PrefabInstance:
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1205741894}
+      objectReference: {fileID: 1348584738}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
@@ -110307,7 +110328,7 @@ PrefabInstance:
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
-      objectReference: {fileID: 1348584738}
+      objectReference: {fileID: 1205741894}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
@@ -110318,7 +110339,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: RandomPickLocomotion
+      value: GivePizza
       objectReference: {fileID: 0}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
@@ -110326,11 +110347,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
-      value: GivePizza
+      value: RandomPickLocomotion
       objectReference: {fileID: 0}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: ExperimentManager, Assembly-CSharp
+      value: GetPizza, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
@@ -110338,7 +110359,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
-      value: GetPizza, Assembly-CSharp
+      value: ExperimentManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4752888273645791970, guid: e5403cfe0b986bd49bdecd99e0037ac1, type: 3}
       propertyPath: onPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -113569,12 +113590,16 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 753906940535007786, guid: 63923e886d16bf34ab42cdab16c68e42, type: 3}
+      propertyPath: pauseAmt
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 753906940535007786, guid: 63923e886d16bf34ab42cdab16c68e42, type: 3}
       propertyPath: turnSpeed
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 753906940535007786, guid: 63923e886d16bf34ab42cdab16c68e42, type: 3}
       propertyPath: testingMode
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 753906940535007786, guid: 63923e886d16bf34ab42cdab16c68e42, type: 3}
       propertyPath: advanceAction
@@ -113630,7 +113655,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4106168933942269347, guid: 63923e886d16bf34ab42cdab16c68e42, type: 3}
       propertyPath: brakeDeceleration
-      value: 1.25
+      value: 1.75
       objectReference: {fileID: 0}
     - target: {fileID: 4528879521781420525, guid: 63923e886d16bf34ab42cdab16c68e42, type: 3}
       propertyPath: m_LocalPosition.z
@@ -113698,6 +113723,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5160022970801363678, guid: 63923e886d16bf34ab42cdab16c68e42, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5662651416894526666, guid: 63923e886d16bf34ab42cdab16c68e42, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

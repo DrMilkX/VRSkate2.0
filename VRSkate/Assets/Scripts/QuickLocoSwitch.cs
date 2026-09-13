@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
 
 public class QuickLocoSwitch : MonoBehaviour
 {
@@ -32,6 +33,8 @@ public class QuickLocoSwitch : MonoBehaviour
     public float menuHeightOffset = 0.1f;
     public Transform headset;
 
+    private ControllerInputActionManager[] controllerInputManagers;
+
 
     void Start()
     {
@@ -40,6 +43,10 @@ public class QuickLocoSwitch : MonoBehaviour
         if (advanceAction != null){
             advanceAction.action.Enable();
         }
+       // Include inactive objects: XR controllers are frequently inactive on the frame Start()
+       // runs, so the default FindObjectsByType returns an empty array and the smooth-motion
+       // routing below silently never reaches a hand (leaving the right hand on teleport).
+       controllerInputManagers = FindObjectsByType<ControllerInputActionManager>(FindObjectsInactive.Include, FindObjectsSortMode.None);
     }
     void Update()
     {
@@ -69,6 +76,16 @@ public class QuickLocoSwitch : MonoBehaviour
                 CurrentLocomotionName = name;
             }else
                 l.behavior.enabled = false;
+        }
+
+        // enable smooth motion for joystick
+        if(name == "joystick"){
+            foreach (var m in controllerInputManagers)
+                if (m != null) m.smoothMotionEnabled = true;
+        }
+        else{
+            foreach (var m in controllerInputManagers)
+                if (m != null) m.smoothMotionEnabled = false;
         }
         
     }

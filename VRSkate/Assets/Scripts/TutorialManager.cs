@@ -107,7 +107,10 @@ public class TutorialManager : MonoBehaviour
             headset = Camera.main.transform;
 
         if (controllerInputManagers == null || controllerInputManagers.Length == 0)
-            controllerInputManagers = FindObjectsByType<ControllerInputActionManager>();
+            // Include inactive objects: XR controllers are frequently inactive on the frame Start()
+            // runs, so the default FindObjectsByType misses them and a hand stays stuck in its
+            // prefab-default mode (e.g. the right hand on teleport during a joystick stage).
+            controllerInputManagers = FindObjectsByType<ControllerInputActionManager>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
         BuildAllPopups();
 

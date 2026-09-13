@@ -8530,6 +8530,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExperimentManager
   player: {fileID: 0}
+  playerRigidbody: {fileID: 0}
   waypointManager: {fileID: 0}
   spawnPoint: {fileID: 0}
   headset: {fileID: 0}
@@ -18378,7 +18379,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 125677983917647425, guid: 6106ff8dc9b84cd498c893f7a43b1bf1, type: 3}
       propertyPath: brakeDeceleration
-      value: 1.25
+      value: 1.75
       objectReference: {fileID: 0}
     - target: {fileID: 548236804792427023, guid: 6106ff8dc9b84cd498c893f7a43b1bf1, type: 3}
       propertyPath: m_LocalPosition.z

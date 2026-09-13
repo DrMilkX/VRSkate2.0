@@ -68,12 +68,22 @@ public class ExperimentManager : MonoBehaviour
     public bool isExperimentRunning = false;
     public bool useAutoMoveFirst = true;
 
+    [Header("Debug")]
+    [Tooltip("Logs [DriftDebug] lines when the player moves, showing the active mode, speed, whether motion is coming through the CharacterController (a locomotion provider) or a script, and each controller manager's smoothMotion state. Turn off once the drift is diagnosed.")]
+    public bool driftDebug = true;
+    private Vector3 _lastPlayerPos;
+    private float _driftLogTimer;
+
 
     void Start()
     {
 
         if (controllerInputManagers == null || controllerInputManagers.Length == 0)
-            controllerInputManagers = FindObjectsByType<ControllerInputActionManager>();
+            // Include inactive objects: XR controllers are frequently inactive on the frame
+            // Start() runs, and the default FindObjectsByType excludes them. Missing a manager
+            // leaves that hand stuck in its prefab-default mode (e.g. the right hand on teleport)
+            // and its move action never gets disabled, which drives the always-on move provider.
+            controllerInputManagers = FindObjectsByType<ControllerInputActionManager>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
         // set all locomotion behaviours to disabled, and add them to the list
         foreach (var locCheck in locomotionChecks)
@@ -105,6 +115,7 @@ public class ExperimentManager : MonoBehaviour
             quicklocoswitch.canUseMenu = false;     // disable loco switcher
         }
 
+        if (player != null) _lastPlayerPos = player.transform.position;
     }
 
 
@@ -120,6 +131,37 @@ public class ExperimentManager : MonoBehaviour
             if (Keyboard.current.wKey.wasPressedThisFrame == true)
                 player.transform.position = waypointManager.GetCurrentWaypointPosition() + new Vector3(0, 0, 2f);
         }
+
+        DriftDebugTick();
+    }
+
+    // Temporary diagnostic: reports uncontrolled player motion so we can see which mode is active,
+    // and whether the movement is coming through the CharacterController (a locomotion provider such
+    // as DynamicMoveProvider) or from a script writing transform.position directly (auto-move / arm-swing).
+    private void DriftDebugTick()
+    {
+        if (!driftDebug || player == null) return;
+
+        _driftLogTimer += Time.deltaTime;
+
+        Vector3 pos = player.transform.position;
+        Vector3 delta = pos - _lastPlayerPos;
+        delta.y = 0f;
+        float horizSpeed = delta.magnitude / Mathf.Max(Time.deltaTime, 1e-5f);
+        _lastPlayerPos = pos;
+
+        if (_driftLogTimer < 0.2f || horizSpeed < 0.05f) return;
+        _driftLogTimer = 0f;
+
+        Vector3 ccVel = playerRigidbody != null ? playerRigidbody.velocity : Vector3.zero;
+        string via = ccVel.magnitude > 0.05f ? "CharacterController(provider)" : "transform(script)";
+
+        string ciam = "";
+        if (controllerInputManagers != null)
+            foreach (var m in controllerInputManagers)
+                if (m != null) ciam += $"[{m.name} smooth={m.smoothMotionEnabled}]";
+
+        Debug.Log($"[DriftDebug] mode='{GetCurrentLocomotionName()}' horizSpeed={horizSpeed:F2} via={via} ccVel={ccVel} CIAMs={ciam}");
     }
 
     private void PositionPopupInFrontOfPlayer(GameObject popup)
@@ -173,11 +215,13 @@ public class ExperimentManager : MonoBehaviour
 
 
         // make sure the player isn't still moving before applying the locomotion lock
-        if (playerRigidbody != null)
-        {
+        if (playerRigidbody != null){
             playerRigidbody.Move(Vector3.zero);
-            
         }
+
+        if (controllerInputManagers != null)
+            foreach (var m in controllerInputManagers)
+                if (m != null) m.smoothMotionEnabled = false;
 
         // isSmoothMotionStage only toggles the extra input-routing flag below —
         // it doesn't replace enabling the stage's own locomotion Behaviour
@@ -189,6 +233,15 @@ public class ExperimentManager : MonoBehaviour
             foreach (var m in controllerInputManagers)
                 if (m != null) m.smoothMotionEnabled = isSmoothMotionStage;
 
+        if (driftDebug)
+        {
+            string ciam = "";
+            if (controllerInputManagers != null)
+                foreach (var m in controllerInputManagers)
+                    if (m != null) ciam += $"[{m.name} smooth={m.smoothMotionEnabled}]";
+            Debug.Log($"[DriftDebug] Locked stage='{lc.locomotionName}' isSmooth={isSmoothMotionStage} " +
+                      $"behaviourEnabled={lc.locomotionBehaviour.enabled} foundCIAMs={(controllerInputManagers != null ? controllerInputManagers.Length : 0)} {ciam}");
+        }
     }
 
     public void RandomPickLocomotion()
